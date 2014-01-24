@@ -35,5 +35,5 @@ app.get('/', routes.index);
 app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){
-  console.log('App running at localhost:' + app.get('port'));
+  console.log('App running at http://localhost:' + app.get('port'));
 });
