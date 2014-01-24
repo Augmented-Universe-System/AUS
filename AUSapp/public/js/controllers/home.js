@@ -1,20 +1,22 @@
 angular.module('AUSapp').controller('Home', ['$scope', function($scope) {
 
-  $scope.init = function() {}
 
-  $scope.lat = "";
-  $scope.long = "";
+  $scope.latitude = "";
+  $scope.longitude = "";
 
-  $scope.getLocation = function() {
+  $scope.init = function() {
     if (navigator.geolocation) {
-      function GetLocation(location) {
-          $scope.lat = location.coords.latitude;
-          $scope.long = location.coords.longitude;
+      function updateLocation(lati, longi) {
+          $scope.latitude = lati;
+          $scope.longitude = longi;
           $scope.$apply();
       }
-      navigator.geolocation.getCurrentPosition(GetLocation);
+      var watchPOS = navigator.geolocation.watchPosition(function(position) {
+        updateLocation(position.coords.latitude, position.coords.longitude);
+        console.log("watch");
+      });
     }
-    else{x.innerHTML="Geolocation is not supported by this browser.";}
+    else{alert("Geolocation is not supported by this browser.");}
   }
 
 }]);
