@@ -1,7 +1,5 @@
 <div id="home" class="innerContainer" ng-init="init()">
-  <button class="btn" ng-click="getLocation()">
-    Get GPS
-  </button>
-  <p><strong>Lat:</strong> {{ latitude }}</strong></p>
-  <p><strong>Long:</strong> {{ longitude }}</strong></p>
+  <ul>
+    <li ng-repeat="message in messages">{{message}}</li>
+  </ul>
 </div>
