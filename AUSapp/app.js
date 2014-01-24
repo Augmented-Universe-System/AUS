@@ -9,6 +9,25 @@ var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 
+var sockjs = require('sockjs');
+var connections = [];
+var chat = sockjs.createServer();
+chat.on('connection', function(conn) {
+    connections.push(conn);
+    var number = connections.length;
+    conn.write("Welcome, User " + number);
+    conn.on('data', function(message) {
+        for (var ii=0; ii < connections.length; ii++) {
+            connections[ii].write("User " + number + " says: " + message);
+        }
+    });
+    conn.on('close', function() {
+        for (var ii=0; ii < connections.length; ii++) {
+            connections[ii].write("User " + number + " has disconnected");
+        }
+    });
+});
+
 var app = express();
 
 // all environments
@@ -34,6 +53,8 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 
-http.createServer(app).listen(app.get('port'), function(){
+var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('App running at http://localhost:' + app.get('port'));
 });
+
+chat.installHandlers(server, {prefix:'/chat'});

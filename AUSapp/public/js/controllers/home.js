@@ -1,7 +1,7 @@
 angular.module('AUSapp').controller('Home', ['$scope', function($scope) {
 
 
-  $scope.sock = new SockJS('/');
+  $scope.sock = new SockJS('http://aus.codesquire.com/chat');
   $scope.messages = [];
   $scope.name = "";
   $scope.latitude = "";
