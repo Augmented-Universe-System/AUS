@@ -2,4 +2,4 @@
 
 git pull
 
-forever restartall
+forever oHxf
