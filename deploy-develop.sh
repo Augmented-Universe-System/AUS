@@ -4,4 +4,4 @@ echo "Attempting to deploy master branch at $(date)" >> /home/project/deployment
 
 git pull
 
-forever restartall
+forever oHxf
