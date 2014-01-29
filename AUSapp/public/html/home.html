@@ -1,7 +1,9 @@
 <div id="home" class="innerContainer" ng-init="init()">
+  <form>
   <input type="number" ng-model="latitude" placeholder="50" />
   <input type="number" ng-model="longitude" placeholder="50" />
   <input type="submit" ng-click="sendMessage()" value="Send" />
+  </form>
   <ul>
     <li ng-repeat="message in messages track by $index">{{message}}</li>
   </ul>
