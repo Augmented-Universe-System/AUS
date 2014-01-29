@@ -1,7 +1,7 @@
 angular.module('AUSapp').controller('Home', ['$scope', function($scope) {
 
 
-  $scope.sock = new SockJS('http://aus.codesquire.com/chat');
+  $scope.sock = new SockJS('/chat');
   $scope.messages = [];
   $scope.name = "";
   $scope.latitude = "";
@@ -9,6 +9,7 @@ angular.module('AUSapp').controller('Home', ['$scope', function($scope) {
 
   $scope.init = function() {
     $scope.name = prompt("Please enter you're name.", "Ada");
+    /*
     if (navigator.geolocation) {
       function updateLocation(lati, longi) {
         $scope.latitude = lati;
@@ -22,7 +23,12 @@ angular.module('AUSapp').controller('Home', ['$scope', function($scope) {
       });
     }
     else{alert("Geolocation is not supported by this browser.");}
-  }
+    */
+  };
+
+  $scope.sendMessage = function() {
+    $scope.sock.send($scope.name + ": " + $scope.latitude + " / " + $scope.longitude);
+  };
 
   $scope.sock.onmessage = function(e) {
     $scope.messages.push(e.data);

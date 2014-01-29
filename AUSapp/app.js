@@ -18,7 +18,7 @@ chat.on('connection', function(conn) {
     conn.write("Welcome, User " + number);
     conn.on('data', function(message) {
         for (var ii=0; ii < connections.length; ii++) {
-            connections[ii].write("User " + number + " says: " + message);
+            connections[ii].write(message);
         }
     });
     conn.on('close', function() {
