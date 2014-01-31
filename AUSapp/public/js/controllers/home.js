@@ -40,14 +40,18 @@ angular.module('AUSapp').controller('Home', ['$scope', function($scope) {
       });
     }
     else{alert("Geolocation is not supported by this browser.");}
-    
+
   };
 
   $scope.sendMessage = function() {
     // ctx.clearRect(0,0, canvas.width, canvas.height);
     // ctx.fillRect($scope.latitude, $scope.longitude, 10, 10);
-
-    $scope.sock.send($scope.name + ": " + $scope.latitude + " / " + $scope.longitude);
+    var message = {
+      name: $scope.name,
+      x: $scope.latitude,
+      y: $scope.longitude
+    };
+    $scope.sock.send(JSON.stringify(message));
   };
 
   $scope.sock.onmessage = function(e) {
