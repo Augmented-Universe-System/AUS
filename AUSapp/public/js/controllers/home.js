@@ -29,9 +29,7 @@ angular.module('AUSapp').controller('Home', ['$scope', function($scope) {
       var watchPOS = navigator.geolocation.watchPosition(function(position) {
         updateLocation(position.coords.latitude, position.coords.longitude);
 
-        //ctx.clearRect(0,0, canvas.width, canvas.height);
         render();
-
 
         $scope.$apply();
         var message = {
@@ -67,9 +65,11 @@ angular.module('AUSapp').controller('Home', ['$scope', function($scope) {
       } else {
         ctx.fillStyle="red";
       }
-      var x = (u.x * 1000000) % 100;
-      var y = (Math.abs(u.y) * 1000000) % 100;
+      var x = (u.x * 100000) % 100;
+      var y = (Math.abs(u.y) * 100000) % 100;
       ctx.fillRect(x, y, 5, 5);
+      ctx.font = "10px Arial";
+      ctx.fillText(u.name, x - 9, y - 2);
     }
   }
 
