@@ -67,6 +67,7 @@ angular.module('AUSapp').controller('Home', ['$scope', function($scope) {
       }
       var x = (u.x * 100000) % 100;
       var y = (Math.abs(u.y) * 100000) % 100;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillRect(x, y, 5, 5);
       ctx.font = "10px Arial";
       ctx.fillText(u.name, x - 9, y - 2);
