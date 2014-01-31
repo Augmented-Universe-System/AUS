@@ -2,6 +2,6 @@
 
 <canvas id="gameCanvas"></canvas>
 <ul id="user-list" >
-  <li ng-repeat="user in users">{{ user.name }}</li>
+  <li ng-repeat="user in users" ng-class="{self: user.name == myname }">{{ user.name }}</li>
 </ul>
 </div>

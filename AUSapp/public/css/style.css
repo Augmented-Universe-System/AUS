@@ -1,6 +1,5 @@
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background: #eee;
 }
 a {
   color: #00b7ff;
@@ -11,4 +10,10 @@ a {
 #user-list {
   list-style: none;
   padding: 0;
+}
+#user-list li {
+  color: #f00;
+}
+#user-list li.self {
+  color: #00f;
 }
