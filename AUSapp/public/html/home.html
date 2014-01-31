@@ -1,13 +1,7 @@
 <div id="home" class="innerContainer" ng-init="init()">
 
 <canvas id="gameCanvas"></canvas>
-
-  <form>
-  <input type="number" ng-model="latitude" placeholder="50" />
-  <input type="number" ng-model="longitude" placeholder="50" />
-  <input type="submit" ng-click="sendMessage()" value="Send" />
-  </form>
-  <ul>
-    <li ng-repeat="message in messages track by $index">{{message}}</li>
-  </ul>
+<ul id="user-list" >
+  <li ng-repeat="user in users">{{ user.name }}</li>
+</ul>
 </div>

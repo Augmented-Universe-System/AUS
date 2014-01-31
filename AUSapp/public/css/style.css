@@ -1,7 +1,14 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background: #eee;
 }
 a {
   color: #00b7ff;
+}
+#gameCanvas {
+  float: left;
+}
+#user-list {
+  list-style: none;
+  padding: 0;
 }
