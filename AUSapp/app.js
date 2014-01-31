@@ -3,11 +3,12 @@
  * Module dependencies.
  */
 
-var express = require('express');
-var routes = require('./routes');
-var user = require('./routes/user');
-var http = require('http');
-var path = require('path');
+var express = require('express')
+  , routes  = require('./routes')
+  , user    = require('./routes/user')
+  , http    = require('http')
+  , path    = require('path')
+  , mydb      = require('./db');
 
 var sockjs = require('sockjs');
 var connections = [];
@@ -17,6 +18,8 @@ chat.on('connection', function(conn) {
     var number = connections.length;
     conn.write("Welcome, User " + number);
     conn.on('data', function(message) {
+        var messageData = eval("(" + message + ")");
+        console.log(messageData.name);
         for (var ii=0; ii < connections.length; ii++) {
             connections[ii].write(message);
         }
@@ -27,6 +30,7 @@ chat.on('connection', function(conn) {
         }
     });
 });
+
 
 var app = express();
 

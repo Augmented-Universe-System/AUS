@@ -27,7 +27,12 @@ angular.module('AUSapp').controller('Home', ['$scope', function($scope) {
   };
 
   $scope.sendMessage = function() {
-    $scope.sock.send($scope.name + ": " + $scope.latitude + " / " + $scope.longitude);
+    var message = {
+      name: $scope.name,
+      x: $scope.latitude,
+      y: $scope.longitude
+    };
+    $scope.sock.send(JSON.stringify(message));
   };
 
   $scope.sock.onmessage = function(e) {
