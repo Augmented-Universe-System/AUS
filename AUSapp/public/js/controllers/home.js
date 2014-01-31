@@ -31,8 +31,8 @@ angular.module('AUSapp').controller('Home', ['$scope', function($scope) {
 
         //ctx.clearRect(0,0, canvas.width, canvas.height);
 
-        var x = ($scope.latitude * 10000000) % 100;
-        var y = (Math.abs($scope.longitude) * 10000000) % 100;
+        var x = ($scope.latitude * 1000000) % 100;
+        var y = (Math.abs($scope.longitude) * 1000000) % 100;
         ctx.fillRect(x, y, 5, 5);
 
         $scope.$apply();
