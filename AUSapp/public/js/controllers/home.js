@@ -2,10 +2,10 @@ angular.module('AUSapp').controller('Home', ['$scope', function($scope) {
 
 
   $scope.sock = new SockJS('/chat');
-  $scope.messages = [];
-  $scope.name = "";
-  $scope.latitude = "";
-  $scope.longitude = "";
+  $scope.users = [];
+  $scope.myname = "";
+  $scope.myx = "";
+  $scope.myy = "";
   var canvas, ctx = "";
 
 
@@ -18,25 +18,28 @@ angular.module('AUSapp').controller('Home', ['$scope', function($scope) {
     canvas.height = 150;
     canvas.style.border = "1px solid";
 
-    $scope.name = prompt("Please enter you're name.", "Ada");
+    $scope.myname = prompt("Please enter you're name.", "Ada");
   
     if (navigator.geolocation) {
       function updateLocation(lati, longi) {
-        $scope.latitude = lati;
-        $scope.longitude = longi;
+        $scope.myx = lati;
+        $scope.myy = longi;
         $scope.$apply();
       }
       var watchPOS = navigator.geolocation.watchPosition(function(position) {
         updateLocation(position.coords.latitude, position.coords.longitude);
 
         //ctx.clearRect(0,0, canvas.width, canvas.height);
+        render();
 
-        var x = ($scope.latitude * 1000000) % 100;
-        var y = (Math.abs($scope.longitude) * 1000000) % 100;
-        ctx.fillRect(x, y, 5, 5);
 
         $scope.$apply();
-        $scope.sock.send($scope.name + ": " + x + " / " + y) ;
+        var message = {
+          name: $scope.myname,
+          x: $scope.myx,
+          y: $scope.myy
+        };
+        $scope.sock.send(JSON.stringify(message));
       });
     }
     else{alert("Geolocation is not supported by this browser.");}
@@ -44,19 +47,30 @@ angular.module('AUSapp').controller('Home', ['$scope', function($scope) {
   };
 
   $scope.sendMessage = function() {
-    // ctx.clearRect(0,0, canvas.width, canvas.height);
-    // ctx.fillRect($scope.latitude, $scope.longitude, 10, 10);
-    var message = {
-      name: $scope.name,
-      x: $scope.latitude,
-      y: $scope.longitude
-    };
-    $scope.sock.send(JSON.stringify(message));
   };
 
   $scope.sock.onmessage = function(e) {
-    $scope.messages.push(e.data);
+    console.log(e.data);
+    var user = eval("(" + e.data + ")");
+    $scope.users.push(user);
+    render();
     $scope.$apply();
   };
+
+  function render() {
+    console.log($scope.users);
+    for (var i=0; i < $scope.users.length; i++) {
+      var u = $scope.users[i];
+      console.log("name: " + $scope.myname);
+      if ( u.name == $scope.myname ) {
+        ctx.fillStyle="blue";
+      } else {
+        ctx.fillStyle="red";
+      }
+      var x = (u.x * 1000000) % 100;
+      var y = (Math.abs(u.y) * 1000000) % 100;
+      ctx.fillRect(x, y, 5, 5);
+    }
+  }
 
 }]);
