@@ -53,4 +53,4 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 require('./sock')(server);
 
 // setup githooks
-require('.hook');
+require('./hook');
