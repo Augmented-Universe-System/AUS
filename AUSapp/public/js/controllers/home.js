@@ -1,7 +1,7 @@
 angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope, $http) {
 
 
-  $scope.sock = new SockJS('/chat');
+  $scope.sock = new SockJS('/sock');
   $scope.users = [];
   $scope.myname = "";
   $scope.myx = "";
