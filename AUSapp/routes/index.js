@@ -1,8 +1,14 @@
+module.exports  = function(app) {
 
-/*
- * GET home page.
- */
+  /*
+  * GET home page.
+  */
 
-exports.index = function(req, res){
-  res.render('index', { title: 'AUS app' });
+  app.get('/', function(req, res){
+    res.render('index', {
+      title: 'AUS app',
+      user: req.user
+    });
+  });
+
 };

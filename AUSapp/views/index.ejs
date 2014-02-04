@@ -1,4 +1,15 @@
 <% include includes/header.ejs %>
+  <% if (user) { %>
+    <div class="welcome">
+      Welcome <%= user.username %>
+      (<a href='/logout'>logout</a>)
+    </div>
+  <% } else { %>
+    <div class="welcome">
+      <a href="/login">Login</a>
+      <a href="/register">Register</a>
+    </div>
+  <% } %>
   <div data-ng-view id="container">
   </div>
 <% include includes/footer.ejs %>
