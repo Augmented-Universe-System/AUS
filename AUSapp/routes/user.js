@@ -36,6 +36,10 @@ module.exports  = function(app) {
     res.redirect('/');
   });
 
+  app.get('/user', function(req, res) {
+    res.json(req.user);
+  });
+
   app.get('/ping', function(req, res) {
     res.send("pong!", 200);
   });

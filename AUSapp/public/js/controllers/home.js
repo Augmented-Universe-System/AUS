@@ -1,4 +1,4 @@
-angular.module('AUSapp').controller('Home', ['$scope', function($scope) {
+angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope, $http) {
 
 
   $scope.sock = new SockJS('/chat');
@@ -18,7 +18,9 @@ angular.module('AUSapp').controller('Home', ['$scope', function($scope) {
     canvas.height = 150;
     canvas.style.border = "1px solid";
 
-    $scope.myname = prompt("Please enter you're name.", "Ada");
+    $http.get('/user').success(function(data) {
+      $scope.myname = data.username;
+    });
   
     if (navigator.geolocation) {
       function updateLocation(lati, longi) {
