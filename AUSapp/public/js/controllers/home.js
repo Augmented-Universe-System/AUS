@@ -12,8 +12,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     canvas = document.getElementById('gameCanvas');
     ctx = canvas.getContext('2d');
 
-    canvas.width = 200;
-    canvas.height = 150;
+    canvas.width = 600;
+    canvas.height = 450;
     canvas.style.border = "1px solid";
 
     $http.get('/user').success(function(data) {
@@ -27,11 +27,12 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   };
 
   $scope.sock.onmessage = function(e) {
-    console.log(e.data);
-    var user = eval("(" + e.data + ")");
-    $scope.users.push(user);
-    render();
-    $scope.$apply();
+    var message = eval("(" + e.data + ")");
+    if (message.type == "user-update") {
+      $scope.users.push(message);
+      render();
+      $scope.$apply();
+    }
   };
 
 //  function render() {
@@ -54,8 +55,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 //  }
 
   function render() {
-    console.log($scope.users);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    var counter = 1;
+    ctx.clearRect(0, 0, 600, 450);
     for (var i=0; i < $scope.users.length; i++) {
       var u = $scope.users[i];
       console.log("name: " + $scope.myname);
@@ -74,8 +75,9 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       img.src = "images/ausimg1.png";
 
       ctx.fillRect(x, y, 5, 5);
-      ctx.font = "10px Arial";
-      ctx.fillText(u.name, x - 9, y - 2);
+      ctx.font = "13px Arial";
+      ctx.fillText(u.name + " (" + counter + ")", x - 20, y - 5);
+      counter ++;
     }
   }
 
@@ -94,6 +96,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
         $scope.$apply();
         var message = {
+          type: "user-update",
           name: $scope.myname,
           x: $scope.myx,
           y: $scope.myy
