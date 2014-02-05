@@ -12,7 +12,7 @@ module.exports  = function(app) {
   });
  
   app.post('/register', function(req, res) {
-    User.register(new User({ username: req.body.username.toLowerCase() }), req.body.password, function(err, user) {
+    User.register(new User({ username: req.body.username }), req.body.password, function(err, user) {
       if (err) {
         return res.render('register', { user: user });
       }
