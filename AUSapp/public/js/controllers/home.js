@@ -1,13 +1,11 @@
 angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope, $http) {
 
-
   $scope.sock = new SockJS('/sock');
   $scope.users = [];
   $scope.myname = "";
   $scope.myx = "";
   $scope.myy = "";
   var canvas, ctx = "";
-
 
   $scope.init = function() {
 
@@ -21,32 +19,11 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     $http.get('/user').success(function(data) {
       $scope.myname = data.username;
     });
-  
-    if (navigator.geolocation) {
-      function updateLocation(lati, longi) {
-        $scope.myx = lati;
-        $scope.myy = longi;
-        $scope.$apply();
-      }
-      var watchPOS = navigator.geolocation.watchPosition(function(position) {
-        updateLocation(position.coords.latitude, position.coords.longitude);
-
-        render();
-
-        $scope.$apply();
-        var message = {
-          name: $scope.myname,
-          x: $scope.myx,
-          y: $scope.myy
-        };
-        $scope.sock.send(JSON.stringify(message));
-      });
-    }
-    else{alert("Geolocation is not supported by this browser.");}
 
   };
 
-  $scope.sendMessage = function() {
+  $scope.sock.onopen = function() {
+    trackLocation();
   };
 
   $scope.sock.onmessage = function(e) {
@@ -74,6 +51,30 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       ctx.font = "10px Arial";
       ctx.fillText(u.name, x - 9, y - 2);
     }
+  }
+
+  function trackLocation() {
+    if (navigator.geolocation) {
+      function updateLocation(lati, longi) {
+        $scope.myx = lati;
+        $scope.myy = longi;
+        $scope.$apply();
+      }
+      var watchPOS = navigator.geolocation.watchPosition(function(position) {
+        updateLocation(position.coords.latitude, position.coords.longitude);
+
+        render();
+
+        $scope.$apply();
+        var message = {
+          name: $scope.myname,
+          x: $scope.myx,
+          y: $scope.myy
+        };
+        $scope.sock.send(JSON.stringify(message));
+      });
+    }
+    else{alert("Geolocation is not supported by this browser.");}
   }
 
 }]);
