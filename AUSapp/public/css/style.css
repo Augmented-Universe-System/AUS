@@ -4,16 +4,17 @@ body {
 a {
   color: #00b7ff;
 }
-#gameCanvas {
-  float: left;
-}
+#gameCanvas,
 #user-list {
   list-style: none;
+  display: inline-block;
   padding: 0;
 }
+#gameCanvas li,
 #user-list li {
   color: #f00;
 }
+#gameCanvas li.self,
 #user-list li.self {
   color: #00f;
 }
