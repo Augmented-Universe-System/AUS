@@ -60,23 +60,26 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     for (var i=0; i < $scope.users.length; i++) {
       var u = $scope.users[i];
       console.log("name: " + $scope.myname);
-      
-      if ( u.name == $scope.myname ) {
-        ctx.fillStyle="blue";
-      } else {
-        ctx.fillStyle="red";
-      }
 
       var x = (u.x * 100000) % 100;
       var y = (Math.abs(u.y) * 100000) % 100;
       
-      img = new Image();
-      img.onload = function() {
-        ctx.drawImage(img, x, y);
+      if ( u.name == $scope.myname ) {
+        ctx.fillStyle="blue";
+        img = new Image();
+        img.onload = function() {
+          ctx.drawImage(img, x, y);
+        }
+        img.src = "images/ausimg1.png";
+      } else {
+        ctx.fillStyle="red";
+        img = new Image();
+        img.onload = function() {
+          ctx.drawImage(img, x, y);
+        }
+        img.src = "images/ausimg2.png";
       }
-      img.src = "images/ausimg1.png";
 
-      //ctx.fillRect(x, y, 5, 5);
       ctx.font = "13px Arial";
       ctx.fillText(u.name + " (" + counter + ")", x - 20, y - 5);
       counter ++;
