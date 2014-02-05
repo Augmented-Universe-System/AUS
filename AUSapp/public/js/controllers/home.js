@@ -27,16 +27,16 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   };
 
   $scope.sock.onmessage = function(e) {
-    console.log(e.data);
-    var user = eval("(" + e.data + ")");
-    $scope.users.push(user);
-    render();
-    $scope.$apply();
+    var message = eval("(" + e.data + ")");
+    if (message.type == "user-update") {
+      $scope.users.push(message);
+      render();
+      $scope.$apply();
+    }
   };
 
   function render() {
     var counter = 1;
-    console.log($scope.users);
     ctx.clearRect(0, 0, 600, 450);
     for (var i=0; i < $scope.users.length; i++) {
       var u = $scope.users[i];
@@ -69,6 +69,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
         $scope.$apply();
         var message = {
+          type: "user-update",
           name: $scope.myname,
           x: $scope.myx,
           y: $scope.myy
