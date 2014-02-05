@@ -1,7 +1,11 @@
 <div id="home" class="innerContainer" ng-init="init()">
-
-<canvas id="gameCanvas"></canvas>
-<ul id="user-list" >
-  <li ng-repeat="user in users" ng-class="{self: user.name == myname }">{{ user.name }}</li>
-</ul>
+  <canvas id="gameCanvas"></canvas>
+  <ul id="user-list" >
+    <li ng-repeat="user in users" ng-class="{self: user.name == myname }">{{ user.name }}</li>
+  </ul>
+  <div id="myinfo">
+    <input type="text" value="{{ myname }}" readonly="readonly" />
+    <input type="number" value="{{ myx }}" readonly="readonly" />
+    <input type="number" value="{{ myy }}" readonly="readonly" />
+  </div>
 </div>
