@@ -34,6 +34,25 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     $scope.$apply();
   };
 
+//  function render() {
+//    console.log($scope.users);
+//    ctx.clearRect(0, 0, canvas.width, canvas.height);
+//   for (var i=0; i < $scope.users.length; i++) {
+//      var u = $scope.users[i];
+//      console.log("name: " + $scope.myname);
+//      if ( u.name == $scope.myname ) {
+//        ctx.fillStyle="blue";
+//      } else {
+//        ctx.fillStyle="red";
+//      }
+//      var x = (u.x * 100000) % 100;
+//      var y = (Math.abs(u.y) * 100000) % 100;
+//      ctx.fillRect(x, y, 5, 5);
+//      ctx.font = "10px Arial";
+//      ctx.fillText(u.name, x - 9, y - 2);
+//    }
+//  }
+
   function render() {
     console.log($scope.users);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -47,11 +66,19 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       }
       var x = (u.x * 100000) % 100;
       var y = (Math.abs(u.y) * 100000) % 100;
+      
+      img = new Image();
+      img.onload = function() {
+        ctx.drawImage(img, 45, 45);
+      }
+      img.src = "images/ausimg1.png";
+
       ctx.fillRect(x, y, 5, 5);
       ctx.font = "10px Arial";
       ctx.fillText(u.name, x - 9, y - 2);
     }
   }
+
 
   function trackLocation() {
     if (navigator.geolocation) {
