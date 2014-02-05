@@ -12,8 +12,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     canvas = document.getElementById('gameCanvas');
     ctx = canvas.getContext('2d');
 
-    canvas.width = 200;
-    canvas.height = 150;
+    canvas.width = 600;
+    canvas.height = 450;
     canvas.style.border = "1px solid";
 
     $http.get('/user').success(function(data) {
@@ -35,8 +35,9 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   };
 
   function render() {
+    var counter = 1;
     console.log($scope.users);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, 600, 450);
     for (var i=0; i < $scope.users.length; i++) {
       var u = $scope.users[i];
       console.log("name: " + $scope.myname);
@@ -48,8 +49,9 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       var x = (u.x * 100000) % 100;
       var y = (Math.abs(u.y) * 100000) % 100;
       ctx.fillRect(x, y, 5, 5);
-      ctx.font = "10px Arial";
-      ctx.fillText(u.name, x - 9, y - 2);
+      ctx.font = "13px Arial";
+      ctx.fillText(u.name + " (" + counter + ")", x - 20, y - 5);
+      counter ++;
     }
   }
 
