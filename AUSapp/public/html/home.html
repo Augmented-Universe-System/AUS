@@ -1,14 +1,18 @@
 <div id="home" class="innerContainer" ng-init="init()">
   <canvas id="gameCanvas"></canvas>
 <div id="chatWindow">
+
+	<ul>
+      <li ng-repeat="message in messages track by $index">{{ message.messageBody }}</li>
+    </ul>
+
 	<form ng-submit="sendChat()">
       <input class="chatInput" size="25" type="text" ng-model="messageText" placeholder="Chat!" />
       <input class="chatInput" type="submit" value="Send"/>
     </form>
+
 </div>
-  <!-- <ul id="user-list" >
-    <li ng-repeat="user in users" ng-class="{self: user.name == myname }">{{ user.name }}</li>
-  </ul> -->
+
   <div id="myinfo">
     <input type="text" value="{{ myname }}" readonly="readonly" />
     <input type="number" value="{{ myx }}" readonly="readonly" />

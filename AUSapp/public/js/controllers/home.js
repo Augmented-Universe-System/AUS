@@ -2,6 +2,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   $scope.sock = new SockJS('/sock');
   $scope.users = [];
+  $scope.messages = [];
   $scope.myname = "";
   $scope.myx = "";
   $scope.myy = "";
@@ -34,6 +35,9 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       render();
       $scope.$apply();
     }
+    else if (message.type == "user-chat") {
+      $scope.messages.push(message);
+    }
   };
 
   $scope.sendChat = function() {
@@ -43,6 +47,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       messageBody: $scope.messageText
     };
       $scope.sock.send(JSON.stringify(chatMessage));
+      $scope.messageText = "";
   };
 
 //  function render() {
