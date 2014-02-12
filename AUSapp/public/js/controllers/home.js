@@ -30,7 +30,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     var message = eval("(" + e.data + ")");
     console.log(message);
     if (message.type == "user-update") {
-      $scope.users.push(message);
+      $scope.users[message.name] = message;
       render();
       $scope.$apply();
     }
@@ -57,10 +57,10 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   function render() {
     var counter = 1;
-    for (var i=0; i < $scope.users.length; i++) {
+    for ( var user in $scope.users ) {
       ctx.clearRect(0, 0, 600, 450);
-      var u = $scope.users[i];
-      console.log("name: " + $scope.myname);
+      var u = $scope.users[user];
+      console.log(user);
 
       var x = (u.x * 100000) % 100;
       var y = (Math.abs(u.y) * 100000) % 100;
