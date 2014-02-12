@@ -35,6 +35,15 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     }
   };
 
+  $scope.sendChat = function() {
+    var chatMessage = {
+      type: "user-chat",
+      name: $scope.myname,
+      messageBody: $scope.messageText;
+    };
+      $scope.sock.send(JSON.stringify(chatMessage));
+  };
+
 //  function render() {
 //    console.log($scope.users);
 //    ctx.clearRect(0, 0, canvas.width, canvas.height);
