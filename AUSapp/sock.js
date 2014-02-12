@@ -13,11 +13,11 @@ module.exports  = function(server, db) {
       //conn.write("Welcome, User " + number);
       conn.on('data', function(message) {
           var messageData = eval("(" + message + ")");
+          // inform all connected users
+          for (var ii=0; ii < connections.length; ii++) {
+              connections[ii].write(message);
+          }
           if ( messageData.type == "user-update" ) {
-            // inform all connected users
-            for (var ii=0; ii < connections.length; ii++) {
-                connections[ii].write(message);
-            }
             // update the DB
             User.findOne( { username: messageData.name }, function(err, user) {
               user.lastLocation = { x: messageData.x, y: messageData.y };
