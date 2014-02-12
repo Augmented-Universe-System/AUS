@@ -36,25 +36,57 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     }
   };
 
+//  function render() {
+//    console.log($scope.users);
+//    ctx.clearRect(0, 0, canvas.width, canvas.height);
+//   for (var i=0; i < $scope.users.length; i++) {
+//      var u = $scope.users[i];
+//      console.log("name: " + $scope.myname);
+//      if ( u.name == $scope.myname ) {
+//        ctx.fillStyle="blue";
+//      } else {
+//        ctx.fillStyle="red";
+//      }
+//      var x = (u.x * 100000) % 100;
+//      var y = (Math.abs(u.y) * 100000) % 100;
+//      ctx.fillRect(x, y, 5, 5);
+//      ctx.font = "10px Arial";
+//      ctx.fillText(u.name, x - 9, y - 2);
+//    }
+//  }
+
   function render() {
     var counter = 1;
-    ctx.clearRect(0, 0, 600, 450);
     for (var i=0; i < $scope.users.length; i++) {
+      ctx.clearRect(0, 0, 600, 450);
       var u = $scope.users[i];
       console.log("name: " + $scope.myname);
-      if ( u.name == $scope.myname ) {
-        ctx.fillStyle="blue";
-      } else {
-        ctx.fillStyle="red";
-      }
+
       var x = (u.x * 100000) % 100;
       var y = (Math.abs(u.y) * 100000) % 100;
-      ctx.fillRect(x, y, 5, 5);
+
+      if ( u.name == $scope.myname ) {
+        ctx.fillStyle="blue";
+        img = new Image();
+        img.onload = function() {
+          ctx.drawImage(img, x, y);
+        }
+        img.src = "images/ausimg1.png";
+      } else {
+        ctx.fillStyle="red";
+        img = new Image();
+        img.onload = function() {
+          ctx.drawImage(img, x, y);
+        }
+        img.src = "images/ausimg2.png";
+      }
+
       ctx.font = "13px Arial";
       ctx.fillText(u.name + " (" + counter + ")", x - 20, y - 5);
       counter ++;
     }
   }
+
 
   function trackLocation() {
     if (navigator.geolocation) {
