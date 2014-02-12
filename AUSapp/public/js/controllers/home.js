@@ -40,7 +40,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     var chatMessage = {
       type: "user-chat",
       name: $scope.myname,
-      messageBody: $scope.messageText;
+      messageBody: $scope.messageText
     };
       $scope.sock.send(JSON.stringify(chatMessage));
   };
