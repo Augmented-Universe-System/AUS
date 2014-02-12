@@ -28,6 +28,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   $scope.sock.onmessage = function(e) {
     var message = eval("(" + e.data + ")");
+    console.log(message);
     if (message.type == "user-update") {
       $scope.users.push(message);
       render();
@@ -68,13 +69,13 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
         render();
 
         $scope.$apply();
-        var message = {
+        var serverMessage = {
           type: "user-update",
           name: $scope.myname,
           x: $scope.myx,
           y: $scope.myy
         };
-        $scope.sock.send(JSON.stringify(message));
+        $scope.sock.send(JSON.stringify(serverMessage));
       });
     }
     else{alert("Geolocation is not supported by this browser.");}
