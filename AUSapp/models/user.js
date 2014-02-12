@@ -5,9 +5,13 @@ var mongoose              = require('mongoose')
 var User = new Schema({
   username: String,
   email: String,
-  location: {
-    x: Number,
-    y: Number
+  info: {
+    active: Boolean,
+    updated: Date,
+    lastLocation: {
+      x: Number,
+      y: Number
+    }
   }
 });
 

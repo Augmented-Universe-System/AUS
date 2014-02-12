@@ -35,11 +35,11 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+// mongoose config
+var db = require('./db');
+
 // passport config
 require('./pass');
-
-// mongoose config
-require('./db');
 
 // routes
 require('./routes/index')(app);
@@ -50,7 +50,7 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 });
 
 // setup websockets
-require('./sock')(server);
+require('./sock')(server, db);
 
 // setup githooks
 require('./hook');
