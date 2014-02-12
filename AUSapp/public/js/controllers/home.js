@@ -3,8 +3,9 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   $scope.sock = new SockJS('/sock');
   $scope.users = [];
   $scope.myname = "";
-  $scope.myx = "";
-  $scope.myy = "";
+  $scope.myx = "5";
+  $scope.myy = "5";
+  $scope.testI = 0;
   var canvas, ctx = "";
 
   $scope.init = function() {
@@ -19,11 +20,15 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     $http.get('/user').success(function(data) {
       $scope.myname = data.username;
     });
-
   };
 
   $scope.sock.onopen = function() {
-    trackLocation();
+    //trackLocation();
+//    var i = 1;
+//    while(i >= 0) {
+        setInterval(testLoop, 200);
+//        i--;
+//    }  
   };
 
   $scope.sock.onmessage = function(e) {
@@ -58,12 +63,17 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   function render() {
     var counter = 1;
     for (var i=0; i < $scope.users.length; i++) {
-      ctx.clearRect(0, 0, 600, 450);
+      ctx.clearRect(0, 0, 600, 450);      
       var u = $scope.users[i];
       console.log("name: " + $scope.myname);
 
-      var x = (u.x * 100000) % 100;
-      var y = (Math.abs(u.y) * 100000) % 100;
+      var x = u.x;
+      var y = Math.abs(u.y);
+      //var x = (u.x * 100000) % 100;
+      //var y = (Math.abs(u.y) * 100000) % 100;
+      var firstX = x;
+      var firstY = y;
+
 
       if ( u.name == $scope.myname ) {
         ctx.fillStyle="blue";
@@ -72,6 +82,13 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
           ctx.drawImage(img, x, y);
         }
         img.src = "images/ausimg1.png";
+        ctx.beginPath();
+        ctx.moveTo(0, 7);
+        ctx.lineTo(u.x, Math.abs(u.y) + 7);
+        ctx.lineTo(u.x, Math.abs(u.y) + 7);
+        ctx.lineJoin = 'miter';
+        ctx.stroke();
+
       } else {
         ctx.fillStyle="red";
         img = new Image();
@@ -98,7 +115,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       var watchPOS = navigator.geolocation.watchPosition(function(position) {
         updateLocation(position.coords.latitude, position.coords.longitude);
 
-        render();
+       //render();
 
         $scope.$apply();
         var serverMessage = {
@@ -111,6 +128,22 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       });
     }
     else{alert("Geolocation is not supported by this browser.");}
+  }
+
+  function testLoop() {
+    if ($scope.testI % 8 == 0)
+      $scope.myx = parseInt($scope.myx) + 5;
+    else
+      $scope.myy = parseInt($scope.myy) + 5;
+    $scope.$apply;
+    var serverMessage = {
+        type: "user-update",
+        name: $scope.myname,
+        x: $scope.myx,
+        y: $scope.myy
+       };
+    $scope.sock.send(JSON.stringify(serverMessage));
+    $scope.testI++;
   }
 
 }]);
