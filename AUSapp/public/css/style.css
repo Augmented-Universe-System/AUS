@@ -18,3 +18,19 @@ a {
 #user-list li.self {
   color: #00f;
 }
+#chatWindow {
+  height: 450px;
+  width: 250px;
+  border-style: solid;
+  border-color: #000;
+  position: relative;
+  float: right;
+}
+.innerContainer {
+  width: 860px;
+}
+.chatInput {
+  position: relative;
+  top: 425px;
+  left: 5px;
+}
