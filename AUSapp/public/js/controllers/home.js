@@ -77,11 +77,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   function render() {
     var counter = 1;
 
-    for (var i=0; i < $scope.users.length; i++) {
-      ctx.clearRect(0, 0, 600, 450);      
-      var u = $scope.users[i];
-      console.log("name: " + $scope.myname);
-
     for ( var user in $scope.users ) {
       ctx.clearRect(0, 0, 600, 450);
       var u = $scope.users[user];
