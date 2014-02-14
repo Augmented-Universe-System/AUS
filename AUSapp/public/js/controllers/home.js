@@ -46,7 +46,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
         type: "user-chat",
         name: "",
         messageBody: data.username + " has logged in!",
-        chatDate: $scope.formatTwelve(d);
+        chatDate: $scope.formatTwelve(d)
       };
       $scope.messages.push(chatMessage);
     });
