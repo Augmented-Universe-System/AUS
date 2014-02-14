@@ -27,7 +27,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     //trackLocation();
 //    var i = 1;
 //    while(i >= 0) {
-        setInterval(testLoop, 200);
+        //setInterval(testLoop, 200);
 //        i--;
 //    }  
   };
