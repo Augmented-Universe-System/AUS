@@ -5,7 +5,7 @@
   <div class="chatContainer">
 
     <div class="chatWindow">
-        <p ng-repeat="message in messages track by $index">{{ message.name }}: {{ message.messageBody }}</p>
+        <p ng-repeat="message in messages track by $index">{{ message.name }}: {{ message.messageBody }} ({{ message.chatDate }})</p>
     </div> <!-- /chatWindow -->
 
     <div class="chatInput">
