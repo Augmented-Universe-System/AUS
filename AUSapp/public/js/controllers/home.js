@@ -3,11 +3,19 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   $scope.sock = new SockJS('/sock');
   $scope.users = [];
   $scope.messages = [];
+  $scope.myself = null;
+  /*
   $scope.myname = "";
   $scope.myx = "5";
   $scope.myy = "5";
+  */
   $scope.testI = 0;
   var canvas, ctx = "";
+
+  function User(name) {
+    this.name = name;
+    this.locations = [{x:5,y:5}];
+  }
 
   $scope.init = function() {
 
@@ -19,28 +27,39 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     canvas.style.border = "1px solid";
 
     $http.get('/user').success(function(data) {
-      $scope.myname = data.username;
+      $scope.myself = new User(data.username);
+      $scope.users.push($scope.myself);
     });
   };
 
   $scope.sock.onopen = function() {
     //trackLocation();
-//    var i = 1;
-//    while(i >= 0) {
-        setInterval(testLoop, 200);
-//        i--;
-//    }  
+    setInterval(testLoop, 200);
   };
+
+  function findUser(name, callback) {
+    for (var i = 0; i < $scope.users.length; i++) {
+      if ( $scope.users[i].name === name ) {
+        callback($scope.users[i]);
+        return;
+      }
+    }
+    console.log("adding user");
+    var u = new User(name);
+    $scope.users.push(u);
+    callback(u);
+  }
 
   $scope.sock.onmessage = function(e) {
     var message = eval("(" + e.data + ")");
     console.log(message);
     if (message.type == "user-update") {
-      $scope.users[message.name] = message;
-      render();
-      $scope.$apply();
-    }
-    else if (message.type == "user-chat") {
+      findUser(message.name, function(user) {
+        user.locations.push({x: message.x, y: message.y});
+        render();
+        $scope.$apply();
+      });
+    } else if (message.type == "user-chat") {
       $scope.messages.push(message);
     }
   };
@@ -77,21 +96,22 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   function render() {
     var counter = 1;
 
-    for ( var user in $scope.users ) {
-      ctx.clearRect(0, 0, 600, 450);
-      var u = $scope.users[user];
+    for ( var i = 0; i < $scope.users.length; i++ ) {
+      var user = $scope.users[i];
       console.log(user);
+      ctx.clearRect(0, 0, 600, 450);
 
+      var userLastLoc = lastLocation(user);
 
-      var x = u.x;
-      var y = Math.abs(u.y);
+      var x = userLastLoc.x;
+      var y = Math.abs(userLastLoc.y);
       //var x = (u.x * 100000) % 100;
       //var y = (Math.abs(u.y) * 100000) % 100;
       var firstX = x;
       var firstY = y;
 
 
-      if ( u.name == $scope.myname ) {
+      if ( user.name == $scope.myself.name ) {
         ctx.fillStyle="blue";
         img = new Image();
         img.onload = function() {
@@ -100,8 +120,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
         img.src = "images/ausimg1.png";
         ctx.beginPath();
         ctx.moveTo(0, 7);
-        ctx.lineTo(u.x, Math.abs(u.y) + 7);
-        ctx.lineTo(u.x, Math.abs(u.y) + 7);
+        ctx.lineTo(userLastLoc.x, Math.abs(userLastLoc.y) + 7);
         ctx.lineJoin = 'miter';
         ctx.stroke();
 
@@ -115,7 +134,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       }
 
       ctx.font = "13px Arial";
-      ctx.fillText(u.name + " (" + counter + ")", x - 20, y - 5);
+      ctx.fillText(user.name + " (" + counter + ")", x - 20, y - 5);
       counter ++;
     }
   }
@@ -124,8 +143,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   function trackLocation() {
     if (navigator.geolocation) {
       function updateLocation(lati, longi) {
-        $scope.myx = lati;
-        $scope.myy = longi;
+        $scope.myself.locations.push({x: lati, y: longi});
         $scope.$apply();
       }
       var watchPOS = navigator.geolocation.watchPosition(function(position) {
@@ -136,9 +154,9 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
         $scope.$apply();
         var serverMessage = {
           type: "user-update",
-          name: $scope.myname,
-          x: $scope.myx,
-          y: $scope.myy
+          name: $scope.myself.name,
+          x: lastLocation($scope.myself).x,
+          y: lastLocation($scope.myself).y
         };
         $scope.sock.send(JSON.stringify(serverMessage));
       });
@@ -146,17 +164,28 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     else{alert("Geolocation is not supported by this browser.");}
   }
 
+  function lastLocation(user) {
+    var tmpx = user.locations[user.locations.length-1].x;
+    var tmpy = user.locations[user.locations.length-1].y;
+    var lastLoc = {
+      x: tmpx,
+      y: tmpy
+    };
+    return lastLoc;
+  }
+
   function testLoop() {
+    var userLastLoc = lastLocation($scope.myself);
     if ($scope.testI % 8 == 0)
-      $scope.myx = parseInt($scope.myx) + 5;
+      $scope.myself.locations.push({x: (userLastLoc.x + 5), y: userLastLoc.y});
     else
-      $scope.myy = parseInt($scope.myy) + 5;
+      $scope.myself.locations.push({x: userLastLoc.x, y: (userLastLoc.y + 5)});
     $scope.$apply;
     var serverMessage = {
         type: "user-update",
-        name: $scope.myname,
-        x: $scope.myx,
-        y: $scope.myy
+        name: $scope.myself.name,
+        x: lastLocation($scope.myself).x,
+        y: lastLocation($scope.myself).y
        };
     $scope.sock.send(JSON.stringify(serverMessage));
     $scope.testI++;
