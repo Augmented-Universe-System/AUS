@@ -2,6 +2,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   $scope.sock = new SockJS('/sock');
   $scope.users = [];
+  $scope.messages = [];
   $scope.myname = "";
   $scope.myx = "5";
   $scope.myy = "5";
@@ -35,10 +36,23 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     var message = eval("(" + e.data + ")");
     console.log(message);
     if (message.type == "user-update") {
-      $scope.users.push(message);
+      $scope.users[message.name] = message;
       render();
       $scope.$apply();
     }
+    else if (message.type == "user-chat") {
+      $scope.messages.push(message);
+    }
+  };
+
+  $scope.sendChat = function() {
+    var chatMessage = {
+      type: "user-chat",
+      name: $scope.myname,
+      messageBody: $scope.messageText
+    };
+      $scope.sock.send(JSON.stringify(chatMessage));
+      $scope.messageText = "";
   };
 
 //  function render() {
@@ -62,10 +76,17 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   function render() {
     var counter = 1;
+
     for (var i=0; i < $scope.users.length; i++) {
       ctx.clearRect(0, 0, 600, 450);      
       var u = $scope.users[i];
       console.log("name: " + $scope.myname);
+
+    for ( var user in $scope.users ) {
+      ctx.clearRect(0, 0, 600, 450);
+      var u = $scope.users[user];
+      console.log(user);
+
 
       var x = u.x;
       var y = Math.abs(u.y);
