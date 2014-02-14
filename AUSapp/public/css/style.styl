@@ -3,7 +3,13 @@ body
 a
   color: #00B7FF
 
+.innerContainer
+  width 865px
+  height 1000px
+
 #gameCanvas
+  position relative
+  float left
 
 #user-list
   list-style none
@@ -14,18 +20,22 @@ a
   li.self
     color blue
 
-#chatWindow
-  height 450px
-  width 250px
-  border-style solid
-  border-color black
+.chatContainer
+  display block
   position relative
   float right
+  height 450px
+  width 260px
 
-.innerContainer
-  width 860px
+.chatWindow
+  display block
+  height 430px
+  width 258px
+  padding 0 5px 0 5px
+  background-color #F8F8F8
+  overflow-y scroll
 
-.chatInput
-  position relative
-  top 425px
-  left 5px
+.chatTime
+  font-size 75%
+  color #707070
+

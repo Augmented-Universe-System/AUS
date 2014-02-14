@@ -29,7 +29,14 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     $http.get('/user').success(function(data) {
       $scope.myself = new User(data.username);
       $scope.users.push($scope.myself);
+      var chatMessage = {
+      type: "user-chat",
+      name: "",
+      messageBody: data.username + " has logged in!"
+      };
+      $scope.messages.push(chatMessage);
     });
+
   };
 
   $scope.sock.onopen = function() {
