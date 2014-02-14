@@ -6,9 +6,9 @@
 
     <div class="chatWindow">
         <p ng-repeat="message in messages track by $index">
-          <span class="chatName">{{ message.name }}</span>
+          <span class="chatName">{{ message.name }}:</span>
           <span class="chatMessage">{{ message.messageBody }}</span>
-          <span class="chatTime">(test)8:15 pm</span>
+          <span class="chatTime">({{ message.chatDate }})</span>
         </p>
     </div> <!-- /chatWindow -->
 

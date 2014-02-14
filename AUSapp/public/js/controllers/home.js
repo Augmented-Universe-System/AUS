@@ -17,6 +17,19 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     this.locations = [{x:5,y:5}];
   }
 
+  var d = new Date();
+
+  $scope.formatTwelve = function(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0'+ minutes : minutes;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    return strTime;
+  }
+
   $scope.init = function() {
 
     canvas = document.getElementById('gameCanvas');
@@ -30,9 +43,10 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       $scope.myself = new User(data.username);
       $scope.users.push($scope.myself);
       var chatMessage = {
-      type: "user-chat",
-      name: "",
-      messageBody: data.username + " has logged in!"
+        type: "user-chat",
+        name: "",
+        messageBody: data.username + " has logged in!",
+        chatDate: $scope.formatTwelve(d);
       };
       $scope.messages.push(chatMessage);
     });
@@ -40,8 +54,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   };
 
   $scope.sock.onopen = function() {
-    //trackLocation();
     setInterval(testLoop, 200);
+    //trackLocation();
   };
 
   function findUser(name, callback) {
@@ -75,7 +89,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     var chatMessage = {
       type: "user-chat",
       name: $scope.myname,
-      messageBody: $scope.messageText
+      messageBody: $scope.messageText,
+      chatDate: $scope.formatTwelve(d),
     };
       $scope.sock.send(JSON.stringify(chatMessage));
       $scope.messageText = "";
