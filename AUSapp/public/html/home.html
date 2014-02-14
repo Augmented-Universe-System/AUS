@@ -5,7 +5,11 @@
   <div class="chatContainer">
 
     <div class="chatWindow">
-        <p ng-repeat="message in messages track by $index">{{ message.name }}: {{ message.messageBody }}</p>
+        <p ng-repeat="message in messages track by $index">
+          <span class="chatName">{{ message.name }}</span>
+          <span class="chatMessage">{{ message.messageBody }}</span>
+          <span class="chatTime">(test)8:15 pm</span>
+        </p>
     </div> <!-- /chatWindow -->
 
     <div class="chatInput">

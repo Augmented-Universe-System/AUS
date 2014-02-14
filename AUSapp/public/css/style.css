@@ -38,3 +38,7 @@ a {
   background-color: #f8f8f8;
   overflow-y: scroll;
 }
+.chatTime {
+  font-size: 75%;
+  color: #707070;
+}
