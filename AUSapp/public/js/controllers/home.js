@@ -88,7 +88,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   $scope.sendChat = function() {
     var chatMessage = {
       type: "user-chat",
-      name: $scope.myname,
+      name: $scope.myself.name,
       messageBody: $scope.messageText,
       chatDate: $scope.formatTwelve(d),
     };
