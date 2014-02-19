@@ -5,8 +5,13 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   $scope.messages = [];
   $scope.myself = null;
   $scope.testI = 0;
+
   var canvas, ctx;
   var rectangleDrawn = false;
+  var imgBlue = new Image();
+  var imgRed = new Image();
+  imgBlue.src = "images/ausimg1.png";
+  imgRed.src = "images/ausimg2.png";
 
   function User(name) {
     this.name = name;
@@ -57,7 +62,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
         messageBody: data.username + " has logged in!",
         chatDate: $scope.formatTwelve(d)
       };
-      $scope.messages.push(chatMessage);
+      $scope.sock.send(JSON.stringify(chatMessage));
     });
 
   };
@@ -92,32 +97,13 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       $scope.messageText = "";
   };
 
-//  function render() {
-//    console.log($scope.users);
-//    ctx.clearRect(0, 0, canvas.width, canvas.height);
-//   for (var i=0; i < $scope.users.length; i++) {
-//      var u = $scope.users[i];
-//      console.log("name: " + $scope.myname);
-//      if ( u.name == $scope.myname ) {
-//        ctx.fillStyle="blue";
-//      } else {
-//        ctx.fillStyle="red";
-//      }
-//      var x = (u.x * 100000) % 100;
-//      var y = (Math.abs(u.y) * 100000) % 100;
-//      ctx.fillRect(x, y, 5, 5);
-//      ctx.font = "10px Arial";
-//      ctx.fillText(u.name, x - 9, y - 2);
-//    }
-//  }
-
   function render() {
+    ctx.clearRect(0, 0, 600, 450);
     var counter = 1;
 
     for ( var i = 0; i < $scope.users.length; i++ ) {
       var user = $scope.users[i];
       console.log(user);
-      ctx.clearRect(0, 0, 600, 450);
 
       var userLastLoc = lastLocation(user);
       var userFirstLoc = firstLocation(user);
@@ -129,38 +115,22 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       //var firstX = x;
       //var firstY = y;
 
-
       if ( user.name == $scope.myself.name ) {
         ctx.fillStyle="blue";
-        img = new Image();
-        img.onload = function() {
-          ctx.drawImage(img, x, y);
-        }
-        img.src = "images/ausimg1.png";
-        ctx.beginPath();
-        ctx.moveTo(userFirstLoc.x, userFirstLoc.y);
-          for(i = 0; i < user.locations.length; i++) {
-            ctx.lineTo(user.locations[i].x, user.locations[i].y);
-          }
-        //ctx.lineTo(userLastLoc.x, Math.abs(userLastLoc.y) + 7);
-        ctx.lineJoin = 'miter';
-        ctx.stroke();
-
+        ctx.strokeStyle="blue";
+        ctx.drawImage(imgBlue, x, y);
       } else {
         ctx.fillStyle="red";
-        img = new Image();
-        img.onload = function() {
-          ctx.drawImage(img, x, y);
-        }
-        img.src = "images/ausimg2.png";
-        ctx.beginPath();
-        ctx.moveTo(userFirstLoc.x, userFirstLoc.y);
-          for(i = 0; i < user.locations.length; i++) {
-            ctx.lineTo(user.locations[i].x, user.locations[i].y);
-          }
-        ctx.lineJoin = 'miter';
-        ctx.stroke();
+        ctx.strokeStyle="red";
+        ctx.drawImage(imgRed, x, y);
       }
+      ctx.beginPath();
+      ctx.moveTo(userFirstLoc.x, userFirstLoc.y);
+      for(i = 0; i < user.locations.length; i++) {
+        ctx.lineTo(user.locations[i].x, user.locations[i].y);
+      }
+      ctx.lineJoin = 'miter';
+      ctx.stroke();
 
       ctx.font = "13px Arial";
       ctx.fillText(user.name + " (" + counter + ")", x - 20, y - 5);
