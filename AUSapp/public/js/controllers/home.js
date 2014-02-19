@@ -124,13 +124,13 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
         ctx.strokeStyle="red";
         ctx.drawImage(imgRed, x, y);
       }
-      ctx.beginPath();
-      ctx.moveTo(userFirstLoc.x, userFirstLoc.y);
-      for(i = 0; i < user.locations.length; i++) {
-        ctx.lineTo(user.locations[i].x, user.locations[i].y);
-      }
-      ctx.lineJoin = 'miter';
-      ctx.stroke();
+//      ctx.beginPath();
+//      ctx.moveTo(userFirstLoc.x, userFirstLoc.y);
+//      for(i = 0; i < user.locations.length; i++) {
+//        ctx.lineTo(user.locations[i].x, user.locations[i].y);
+//      }
+//      ctx.lineJoin = 'miter';
+//      ctx.stroke();
 
       ctx.font = "13px Arial";
       ctx.fillText(user.name + " (" + counter + ")", x - 20, y - 5);
