@@ -1,6 +1,6 @@
 angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope, $http) {
 
-  $scope.sock = new SockJS('/sock');
+  var sock = new SockJS('/sock');
   $scope.users = [];
   $scope.messages = [];
   $scope.myself = null;
@@ -8,9 +8,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   var canvas, ctx;
   var rectangleDrawn = false;
-  var imgBlue = new Image();
+  var myImg = new Image();
   var imgRed = new Image();
-  imgBlue.src = "images/ausimg1.png";
   imgRed.src = "images/ausimg2.png";
 
   function User(name) {
@@ -53,26 +52,33 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     canvas.height = 450;
     canvas.style.border = "1px solid";
 
+    // get user from server API
     $http.get('/user').success(function(data) {
       $scope.myself = new User(data.username);
       $scope.users.push($scope.myself);
+      // create a Message to send
       var chatMessage = {
         type: "user-chat",
         name: "",
         messageBody: data.username + " has logged in!",
         chatDate: $scope.formatTwelve(d)
       };
-      $scope.sock.send(JSON.stringify(chatMessage));
+      // **RACE CONDITIONS** delay sending message
+      setTimeout( function() {
+        sock.send(JSON.stringify(chatMessage));
+      }, 500);
+      // Get users avatar
     });
 
   };
 
-  $scope.sock.onopen = function() {
+
+  sock.onopen = function() {
     //setInterval(testLoop, 200);
     trackLocation();
   };
 
-  $scope.sock.onmessage = function(e) {
+  sock.onmessage = function(e) {
     var message = eval("(" + e.data + ")");
     console.log(message);
     if (message.type == "user-update") {
@@ -83,6 +89,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       });
     } else if (message.type == "user-chat") {
       $scope.messages.push(message);
+      console.log($scope.messages);
     }
   };
 
@@ -93,7 +100,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       messageBody: $scope.messageText,
       chatDate: $scope.formatTwelve(d),
     };
-      $scope.sock.send(JSON.stringify(chatMessage));
+      sock.send(JSON.stringify(chatMessage));
       $scope.messageText = "";
   };
 
@@ -118,7 +125,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       if ( user.name == $scope.myself.name ) {
         ctx.fillStyle="blue";
         ctx.strokeStyle="blue";
-        ctx.drawImage(imgBlue, x, y);
+        ctx.drawImage(myImg, x, y);
       } else {
         ctx.fillStyle="red";
         ctx.strokeStyle="red";
@@ -159,7 +166,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
           x: lastLocation($scope.myself).x,
           y: lastLocation($scope.myself).y
         };
-        $scope.sock.send(JSON.stringify(serverMessage));
+        sock.send(JSON.stringify(serverMessage));
       });
     }
     else{alert("Geolocation is not supported by this browser.");}
@@ -198,8 +205,22 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
         x: lastLocation($scope.myself).x,
         y: lastLocation($scope.myself).y
        };
-    $scope.sock.send(JSON.stringify(serverMessage));
+    sock.send(JSON.stringify(serverMessage));
     $scope.testI++;
   }
 
+  function getAvatar(name) {
+    var url = 'https://api.github.com/users/' + data.username;
+    $http.get(url).success(function(data) {
+      myImg.src = data.avatar_url;
+      if (data.avatar_url) {
+        console.log(data.avatar_url);
+      } else {
+        console.log('no image');
+      }
+    }).error(function(data) {
+      // set a default avatar if failed
+      myImg.src = "images/ausimg1.png";
+    });
+  }
 }]);
