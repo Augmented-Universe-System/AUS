@@ -4,18 +4,26 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   $scope.users = [];
   $scope.messages = [];
   $scope.myself = null;
-  /*
-  $scope.myname = "";
-  $scope.myx = "5";
-  $scope.myy = "5";
-  */
   $scope.testI = 0;
-  var canvas, ctx = "";
+  var canvas, ctx;
   var rectangleDrawn = false;
 
   function User(name) {
     this.name = name;
     this.locations = [{x:5,y:5}];
+  }
+
+  function findUser(name, callback) {
+    for (var i = 0; i < $scope.users.length; i++) {
+      if ( $scope.users[i].name === name ) {
+        callback($scope.users[i]);
+        return;
+      }
+    }
+    console.log("adding user");
+    var u = new User(name);
+    $scope.users.push(u);
+    callback(u);
   }
 
   var d = new Date();
@@ -58,19 +66,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     setInterval(testLoop, 200);
     //trackLocation();
   };
-
-  function findUser(name, callback) {
-    for (var i = 0; i < $scope.users.length; i++) {
-      if ( $scope.users[i].name === name ) {
-        callback($scope.users[i]);
-        return;
-      }
-    }
-    console.log("adding user");
-    var u = new User(name);
-    $scope.users.push(u);
-    callback(u);
-  }
 
   $scope.sock.onmessage = function(e) {
     var message = eval("(" + e.data + ")");
