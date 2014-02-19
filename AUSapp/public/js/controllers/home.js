@@ -11,6 +11,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   */
   $scope.testI = 0;
   var canvas, ctx = "";
+  var rectangleDrawn = false;
 
   function User(name) {
     this.name = name;
@@ -124,13 +125,14 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       ctx.clearRect(0, 0, 600, 450);
 
       var userLastLoc = lastLocation(user);
+      var userFirstLoc = firstLocation(user);
 
       var x = userLastLoc.x;
       var y = Math.abs(userLastLoc.y);
       //var x = (u.x * 100000) % 100;
       //var y = (Math.abs(u.y) * 100000) % 100;
-      var firstX = x;
-      var firstY = y;
+      //var firstX = x;
+      //var firstY = y;
 
 
       if ( user.name == $scope.myself.name ) {
@@ -141,8 +143,11 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
         }
         img.src = "images/ausimg1.png";
         ctx.beginPath();
-        ctx.moveTo(0, 7);
-        ctx.lineTo(userLastLoc.x, Math.abs(userLastLoc.y) + 7);
+        ctx.moveTo(userFirstLoc.x, userFirstLoc.y);
+          for(i = 0; i < user.locations.length; i++) {
+            ctx.lineTo(user.locations[i].x, user.locations[i].y);
+          }
+        //ctx.lineTo(userLastLoc.x, Math.abs(userLastLoc.y) + 7);
         ctx.lineJoin = 'miter';
         ctx.stroke();
 
@@ -153,6 +158,13 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
           ctx.drawImage(img, x, y);
         }
         img.src = "images/ausimg2.png";
+        ctx.beginPath();
+        ctx.moveTo(userFirstLoc.x, userFirstLoc.y);
+          for(i = 0; i < user.locations.length; i++) {
+            ctx.lineTo(user.locations[i].x, user.locations[i].y);
+          }
+        ctx.lineJoin = 'miter';
+        ctx.stroke();
       }
 
       ctx.font = "13px Arial";
@@ -186,6 +198,16 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     else{alert("Geolocation is not supported by this browser.");}
   }
 
+  function firstLocation(user) {
+    var tmpx = user.locations[0].x;
+    var tmpy = user.locations[0].y;
+    var firstLoc = {
+      x: tmpx,
+      y: tmpy
+    };
+    return firstLoc;
+  }
+
   function lastLocation(user) {
     var tmpx = user.locations[user.locations.length-1].x;
     var tmpy = user.locations[user.locations.length-1].y;
@@ -199,7 +221,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   function testLoop() {
     var userLastLoc = lastLocation($scope.myself);
     if ($scope.testI % 8 == 0)
-      $scope.myself.locations.push({x: (userLastLoc.x + 5), y: userLastLoc.y});
+      $scope.myself.locations.push({x: (userLastLoc.x + 35), y: userLastLoc.y});
     else
       $scope.myself.locations.push({x: userLastLoc.x, y: (userLastLoc.y + 5)});
     $scope.$apply;
