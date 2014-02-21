@@ -6,6 +6,7 @@
 
     <div class="chatWindow">
         <p ng-repeat="message in messages track by $index">
+          <img src="{{ avatarUrl[message.name] }}" />
           <span class="chatName">{{ message.name }}:</span>
           <span class="chatMessage">{{ message.messageBody }}</span>
           <span class="chatTime">({{ message.chatDate }})</span>
