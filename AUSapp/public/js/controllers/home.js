@@ -14,7 +14,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   function User(name) {
     console.log("creating new user");
     this.name = name;
-    this.locations = [{x:5,y:5}];
+    this.locations = [{}];
     getAvatar(name);
   }
 
@@ -74,8 +74,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
 
   sock.onopen = function() {
-    //setInterval(testLoop, 200);
-    trackLocation();
+    setInterval(testLoop, 2000);
+    //trackLocation();
   };
 
   sock.onmessage = function(e) {
@@ -114,9 +114,18 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
       var userLastLoc = lastLocation(user);
       var userFirstLoc = firstLocation(user);
+      var userSecToLastLoc = secondToLastLoc(user);
+      console.log("This is the user's first location: " + userFirstLoc.x + " " + userFirstLoc.y);
+      console.log("This is the user's last location: " + userLastLoc.x + " " + userLastLoc.y);
+      console.log("This is the user's second to last location: " + userSecToLastLoc.x + " " + userSecToLastLoc.y);
 
       var x = userLastLoc.x;
-      var y = Math.abs(userLastLoc.y);
+      var y = userLastLoc.y;
+      var x2 = userSecToLastLoc.x;
+      var y2 = userSecToLastLoc.y;
+
+
+      console.log("This is x in render() " + x + " ; This is y in render() " + y);
       //var x = (u.x * 100000) % 100;
       //var y = (Math.abs(u.y) * 100000) % 100;
       //var firstX = x;
@@ -130,17 +139,19 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
         ctx.strokeStyle="red";
       }
       ctx.drawImage($scope.avatar[user.name], x, y);
+
       ctx.beginPath();
       ctx.moveTo(userFirstLoc.x, userFirstLoc.y);
       for(i = 0; i < user.locations.length; i++) {
-        ctx.lineTo(user.locations[i].x, user.locations[i].y);
+        ctx.lineTo(user.locations[i].x, Math.abs(user.locations[i].y));
       }
       ctx.lineJoin = 'miter';
       ctx.stroke();
 
       ctx.font = "13px Arial";
-      ctx.fillText(user.name + " (" + counter + ")", x - 20, y - 5);
-      counter ++;
+      ctx.fillText(user.name, x - 10, y - 5);
+      //ctx.fillText(user.name + " (" + counter + ")", x - 20, y - 5);
+      //counter ++;
     }
   }
 
@@ -148,8 +159,9 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   function trackLocation() {
     if (navigator.geolocation) {
       function updateLocation(lati, longi) {
-        var add = 5;
-        $scope.myself.locations.push({x: lati+add, y: longi-add});
+        //var add = 5;
+        $scope.myself.locations.push({x: lati, y: longi});
+        console.log("Latitude in trackLocation() " + lati + " ; Longitude in trackLocation() " + longi);
         $scope.$apply();
       }
       var watchPOS = navigator.geolocation.watchPosition(function(position) {
@@ -171,8 +183,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   }
 
   function firstLocation(user) {
-    var tmpx = user.locations[0].x;
-    var tmpy = user.locations[0].y;
+    var tmpx = user.locations[1].x;
+    var tmpy = Math.abs(user.locations[1].y);
     var firstLoc = {
       x: tmpx,
       y: tmpy
@@ -180,9 +192,19 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     return firstLoc;
   }
 
+  function secondToLastLoc(user) {
+    var tmpx = user.locations[user.locations.length-2].x;
+    var tmpy = Math.abs(user.locations[user.locations.length-2].y);
+    var secToLastLoc = {
+      x: tmpx,
+      y: tmpy
+    };
+    return secToLastLoc;
+  }
+
   function lastLocation(user) {
     var tmpx = user.locations[user.locations.length-1].x;
-    var tmpy = user.locations[user.locations.length-1].y;
+    var tmpy = Math.abs(user.locations[user.locations.length-1].y);
     var lastLoc = {
       x: tmpx,
       y: tmpy
@@ -190,21 +212,41 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     return lastLoc;
   }
 
-  function testLoop() {
-    var userLastLoc = lastLocation($scope.myself);
+function testLoop() {
+    //var userLastLoc = lastLocation($scope.myself);
+
+    // generate random coordinates between 10-400 for x and 10-300 for y
+    var minX = 10;
+    var maxX = 400;
+    var randX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+
+    var minY = 10;
+    var maxY = 400;
+    var randY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+
+    console.log("random coordinates: rand x: " + randX + ", rand y: " + randY );
+
+    $scope.myself.locations.push({x: randX, y: randY});
+    $scope.apply;
+
+    /*
     if ($scope.testI % 8 == 0)
       $scope.myself.locations.push({x: (userLastLoc.x + 35), y: userLastLoc.y});
     else
       $scope.myself.locations.push({x: userLastLoc.x, y: (userLastLoc.y + 5)});
-    $scope.$apply;
+    $scope.$apply;*/
     var serverMessage = {
         type: "user-update",
         name: $scope.myself.name,
-        x: lastLocation($scope.myself).x,
-        y: lastLocation($scope.myself).y
+        x: randX,
+        y: randY
+
+        //x: lastLocation($scope.myself).x,
+        //y: lastLocation($scope.myself).y
        };
     sock.send(JSON.stringify(serverMessage));
-    $scope.testI++;
+    //$scope.testI++;
+    
   }
 
   function getAvatar(name) {
