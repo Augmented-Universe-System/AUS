@@ -73,9 +73,10 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   };
 
+
   sock.onopen = function() {
-    setInterval(testLoop, 200);
-    //trackLocation();
+    //setInterval(testLoop, 200);
+    trackLocation();
   };
 
   sock.onmessage = function(e) {
@@ -132,13 +133,14 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
         ctx.strokeStyle="red";
         ctx.drawImage(imgRed, x, y);
       }
-//      ctx.beginPath();
-//      ctx.moveTo(userFirstLoc.x, userFirstLoc.y);
-//      for(i = 0; i < user.locations.length; i++) {
-//        ctx.lineTo(user.locations[i].x, user.locations[i].y);
-//      }
-//      ctx.lineJoin = 'miter';
-//      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(userFirstLoc.x, userFirstLoc.y);
+      for(i = 0; i < user.locations.length; i++) {
+        ctx.lineTo(user.locations[i].x, user.locations[i].y);
+      }
+      ctx.lineJoin = 'miter';
+      ctx.stroke();
+
 
       ctx.font = "13px Arial";
       ctx.fillText(user.name + " (" + counter + ")", x - 20, y - 5);
@@ -150,7 +152,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   function trackLocation() {
     if (navigator.geolocation) {
       function updateLocation(lati, longi) {
-        $scope.myself.locations.push({x: lati, y: longi});
+        var add = 5;
+        $scope.myself.locations.push({x: lati+add, y: longi-add});
         $scope.$apply();
       }
       var watchPOS = navigator.geolocation.watchPosition(function(position) {
