@@ -8,7 +8,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   $scope.testI = 0;
 
   var canvas, ctx;
-  var rectangleDrawn = false;
 
   function User(name) {
     console.log("creating new user");
@@ -113,16 +112,11 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
       var userLastLoc = lastLocation(user);
       var userFirstLoc = firstLocation(user);
-      var userSecToLastLoc = secondToLastLoc(user);
       console.log("This is the user's first location: " + userFirstLoc.x + " " + userFirstLoc.y);
       console.log("This is the user's last location: " + userLastLoc.x + " " + userLastLoc.y);
-      console.log("This is the user's second to last location: " + userSecToLastLoc.x + " " + userSecToLastLoc.y);
 
       var x = userLastLoc.x;
       var y = userLastLoc.y;
-      var x2 = userSecToLastLoc.x;
-      var y2 = userSecToLastLoc.y;
-
 
       console.log("This is x in render() " + x + " ; This is y in render() " + y);
       //var x = (u.x * 100000) % 100;
@@ -133,11 +127,13 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       if ( user.name == $scope.myself.name ) {
         ctx.fillStyle="blue";
         ctx.strokeStyle="blue";
+        ctx.drawImage($scope.avatar[user.name], x, y);
       } else {
         ctx.fillStyle="red";
         ctx.strokeStyle="red";
+        ctx.drawImage($scope.avatar[user.name], x + 100, y);
       }
-      ctx.drawImage($scope.avatar[user.name], x, y);
+      //ctx.drawImage($scope.avatar[user.name], x, y);
 
       ctx.beginPath();
       ctx.moveTo(userFirstLoc.x, userFirstLoc.y);
@@ -158,15 +154,12 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   function trackLocation() {
     if (navigator.geolocation) {
       function updateLocation(lati, longi) {
-        //var add = 5;
         $scope.myself.locations.push({x: lati, y: longi});
         console.log("Latitude in trackLocation() " + lati + " ; Longitude in trackLocation() " + longi);
         $scope.$apply();
       }
       var watchPOS = navigator.geolocation.watchPosition(function(position) {
         updateLocation(position.coords.latitude, position.coords.longitude);
-
-       //render();
 
         $scope.$apply();
         var serverMessage = {
@@ -191,16 +184,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     return firstLoc;
   }
 
-  function secondToLastLoc(user) {
-    var tmpx = user.locations[user.locations.length-2].x;
-    var tmpy = Math.abs(user.locations[user.locations.length-2].y);
-    var secToLastLoc = {
-      x: tmpx,
-      y: tmpy
-    };
-    return secToLastLoc;
-  }
-
   function lastLocation(user) {
     var tmpx = user.locations[user.locations.length-1].x;
     var tmpy = Math.abs(user.locations[user.locations.length-1].y);
@@ -212,6 +195,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   }
 
 function testLoop() {
+
     //var userLastLoc = lastLocation($scope.myself);
 
     // generate random coordinates between 10-400 for x and 10-300 for y
@@ -233,7 +217,8 @@ function testLoop() {
       $scope.myself.locations.push({x: (userLastLoc.x + 35), y: userLastLoc.y});
     else
       $scope.myself.locations.push({x: userLastLoc.x, y: (userLastLoc.y + 5)});
-    $scope.$apply;*/
+    $scope.$apply;
+    */
     var serverMessage = {
         type: "user-update",
         name: $scope.myself.name,
@@ -245,7 +230,6 @@ function testLoop() {
        };
     sock.send(JSON.stringify(serverMessage));
     //$scope.testI++;
-    
   }
 
   function getAvatar(name) {
