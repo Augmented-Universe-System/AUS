@@ -2,19 +2,19 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   var sock = new SockJS('/sock');
   $scope.users = [];
+  $scope.avatar = {};
   $scope.messages = [];
   $scope.myself = null;
   $scope.testI = 0;
 
   var canvas, ctx;
   var rectangleDrawn = false;
-  var myImg = new Image();
-  var imgRed = new Image();
-  imgRed.src = "images/ausimg2.png";
 
   function User(name) {
+    console.log("creating new user");
     this.name = name;
     this.locations = [{x:5,y:5}];
+    getAvatar(name);
   }
 
   function findUser(name, callback) {
@@ -25,8 +25,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       }
     }
     console.log("adding user");
-    var u = new User(name);
-    $scope.users.push(u);
+    var newUser = new User(name);
+    $scope.users.push(newUser);
     callback(u);
   }
 
@@ -67,7 +67,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       setTimeout( function() {
         sock.send(JSON.stringify(chatMessage));
       }, 500);
-      // Get users avatar
     });
 
   };
@@ -104,12 +103,12 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   };
 
   function render() {
+    console.log($scope.users);
     ctx.clearRect(0, 0, 600, 450);
     var counter = 1;
 
     for ( var i = 0; i < $scope.users.length; i++ ) {
       var user = $scope.users[i];
-      console.log(user);
 
       var userLastLoc = lastLocation(user);
       var userFirstLoc = firstLocation(user);
@@ -124,12 +123,11 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       if ( user.name == $scope.myself.name ) {
         ctx.fillStyle="blue";
         ctx.strokeStyle="blue";
-        ctx.drawImage(myImg, x, y);
       } else {
         ctx.fillStyle="red";
         ctx.strokeStyle="red";
-        ctx.drawImage(imgRed, x, y);
       }
+      ctx.drawImage($scope.avatar[user.name], x, y);
 //      ctx.beginPath();
 //      ctx.moveTo(userFirstLoc.x, userFirstLoc.y);
 //      for(i = 0; i < user.locations.length; i++) {
@@ -207,17 +205,15 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   }
 
   function getAvatar(name) {
-    var url = 'https://api.github.com/users/' + data.username;
+    var url = 'https://api.github.com/users/' + name;
     $http.get(url).success(function(data) {
-      myImg.src = data.avatar_url;
-      if (data.avatar_url) {
-        console.log(data.avatar_url);
-      } else {
-        console.log('no image');
-      }
+      console.log("success getting image");
+      $scope.avatar[name] = new Image();
+      $scope.avatar[name].src = data.avatar_url;
     }).error(function(data) {
+      console.log(data);
       // set a default avatar if failed
-      myImg.src = "images/ausimg1.png";
+      $scope.avatar[name].src = "images/ausimg1.png";
     });
   }
 }]);
