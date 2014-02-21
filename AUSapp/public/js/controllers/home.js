@@ -119,7 +119,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       var x = userLastLoc.x;
       var y = userLastLoc.y;
 
-      console.log("This is x in render() " + x + " ; This is y in render() " + y);
+      console.log("UserName: " + user.name + " This is x in render() " + x + " ; This is y in render() " + y);
       //var x = (u.x * 100000) % 100;
       //var y = (Math.abs(u.y) * 100000) % 100;
       //var firstX = x;
