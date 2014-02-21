@@ -3,6 +3,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   var sock = new SockJS('/sock');
   $scope.users = [];
   $scope.avatar = {};
+  $scope.avatarUrl = {};
   $scope.messages = [];
   $scope.myself = null;
   $scope.testI = 0;
@@ -212,6 +213,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       console.log("success getting image");
       $scope.avatar[name] = new Image();
       $scope.avatar[name].src = data.avatar_url;
+      $scope.avatarUrl[name] = data.avatar_url;
     }).error(function(data) {
       console.log(data);
       // set a default avatar if failed
