@@ -151,6 +151,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     }
   }
 
+//extra
 
   function trackLocation() {
     if (navigator.geolocation) {
