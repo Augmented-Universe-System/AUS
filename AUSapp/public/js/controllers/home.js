@@ -146,12 +146,61 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
       ctx.font = "13px Arial";
       ctx.fillText(user.name, x - 10, y - 5);
+      pathIntersection(user.name, x, y);
       //ctx.fillText(user.name + " (" + counter + ")", x - 20, y - 5);
       //counter ++;
     }
   }
 
-//extra
+
+  //extra
+  function relocating(user) {
+    //avatar first drawn on specific location
+    //old GPS location minus new GPS location
+    var gpsLocX = Math.abs(user.locations[user.locations.length-2].x - user.locations[user.locations.length-1].x);
+    var gpsLocY = Math.abs(user.locations[user.locations.length-2].y - user.locations[user.locations.length-1].y);
+    //take difference, multiply it by some number
+    var avatarLocX = gpsLocX * 200;
+    var avatarLocY = gpsLocY * 200;
+    //return new locations for the avatar
+    return [avatarLocX, avatarLocY];
+    //add location to avatar's location, which in turn moves avatar on canvas
+  }
+
+
+
+  function pathIntersection(user, x, y) {
+    //check the next position of user
+    //check to see if user hits another's path
+      //need to minus all the widths of each user and see if anyone hits anyone else
+    for (var u = 0; u < $scope.users.length; u++) {
+      for (var ul = 1; ul < $scope.users[u].locations.length-1; ul++) {
+        
+        console.log("This is the length of the users' locations: " + $scope.users[u].locations.length);
+        console.log("u: " + u);
+        console.log("ul: " + ul);
+        console.log("This is the input of x: " + Math.abs(x) + "\n");
+        console.log("This is the abs of x: " + Math.abs($scope.users[u].locations[ul].x) + "\n");
+        console.log("This is the input of y: " + Math.abs(y) + "\n");
+        console.log("This is the abs of y: " + Math.abs($scope.users[u].locations[ul].y) + "\n");
+       
+        if ( (Math.abs(x) > Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) == Math.abs($scope.users[u].locations[ul].y)) || 
+          (Math.abs(x) < Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) == Math.abs($scope.users[u].locations[ul].y)) ||
+          (Math.abs(x) == Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) > Math.abs($scope.users[u].locations[ul].y)) ||
+          (Math.abs(x) == Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) < Math.abs($scope.users[u].locations[ul].y)) ||
+          (Math.abs(x) < Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) > Math.abs($scope.users[u].locations[ul].y)) ||
+          (Math.abs(x) > Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) < Math.abs($scope.users[u].locations[ul].y)) ||
+          (Math.abs(x) > Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) > Math.abs($scope.users[u].locations[ul].y)) ||
+          (Math.abs(x) < Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) < Math.abs($scope.users[u].locations[ul].y)) ||
+          (Math.abs(x) == Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) == Math.abs($scope.users[u].locations[ul].y)) ) {
+          alert("User " + user.name + " has lost the game.");
+        }
+      }
+    }
+    //if hit path, user lose
+    //else if not hit path, do nothing
+  }
+
 
   function trackLocation() {
     if (navigator.geolocation) {
