@@ -184,7 +184,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
         console.log("This is the input of y: " + Math.abs(y) + "\n");
         console.log("This is the abs of y: " + Math.abs($scope.users[u].locations[ul].y) + "\n");
        
-        if ( (Math.abs(x) > Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) == Math.abs($scope.users[u].locations[ul].y)) || 
+        if ( ((Math.abs(x) > Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) == Math.abs($scope.users[u].locations[ul].y)) || 
           (Math.abs(x) < Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) == Math.abs($scope.users[u].locations[ul].y)) ||
           (Math.abs(x) == Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) > Math.abs($scope.users[u].locations[ul].y)) ||
           (Math.abs(x) == Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) < Math.abs($scope.users[u].locations[ul].y)) ||
@@ -192,8 +192,12 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
           (Math.abs(x) > Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) < Math.abs($scope.users[u].locations[ul].y)) ||
           (Math.abs(x) > Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) > Math.abs($scope.users[u].locations[ul].y)) ||
           (Math.abs(x) < Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) < Math.abs($scope.users[u].locations[ul].y)) ||
-          (Math.abs(x) == Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) == Math.abs($scope.users[u].locations[ul].y)) ) {
-          alert("User " + user.name + " has lost the game.");
+          (Math.abs(x) == Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) == Math.abs($scope.users[u].locations[ul].y))) && (Math.abs(x) != Math.abs($scope.myself.locations[ul].x) && Math.abs(y) != Math.abs($scope.myself.locations[ul].y)) ) {
+            alert("User " + user.name + " has lost the game.");
+            //for (var g = 0; g < $scope.myself.locations.length; g++) {
+              //console.log("This is the user's location number " + g + ": " + $scope.myself.locations[g].x + ", " + $scope.myself.locations[g].y);
+            //}
+            //console.log("User " + user.name + " has lost the game.");
         }
       }
     }
