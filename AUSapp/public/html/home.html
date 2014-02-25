@@ -6,10 +6,10 @@
 
     <div class="chatWindow">
         <p ng-repeat="message in messages track by $index">
-          <img src="{{ avatarUrl[message.name] }}" />
-          <span class="chatName">{{ message.name }}:</span>
-          <span class="chatMessage">{{ message.messageBody }}</span>
-          <span class="chatTime">({{ message.chatDate }})</span>
+          <img src="{{ avatarUrl[message.name] }}" height="40px" width="40px" />
+          <span ng-class="{red: message.doChange == 'no', blue: message.doChange == 'yes'}">{{ message.name }}</span>:
+          <span ng-class="{red: message.doChange == 'no', blue: message.doChange == 'yes'}">{{ message.messageBody }}</span>
+          <span ng-class="{red: message.doChange == 'no', blue: message.doChange == 'yes'}">({{ message.chatDate }})</span>
         </p>
     </div> <!-- /chatWindow -->
 

@@ -31,8 +31,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     callback(u);
   }
 
-  //var d = new Date();
-
   $scope.formatTwelve = function(date) {
     var hours = date.getHours();
     var minutes = date.getMinutes();
@@ -101,6 +99,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       name: $scope.myself.name,
       messageBody: $scope.messageText,
       chatDate: $scope.formatTwelve(d),
+      doChange: 'yes'
     };
       sock.send(JSON.stringify(chatMessage));
       $scope.messageText = "";
