@@ -42,3 +42,9 @@ a {
   font-size: 75%;
   color: #707070;
 }
+.red {
+  color: #f00;
+}
+.blue {
+  color: #00f;
+}
