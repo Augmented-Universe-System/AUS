@@ -48,9 +48,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     for ( var i = 0; i < $scope.users.length; i++ ) {
       var user = $scope.users[i];
       var lasLoc = lastLocation(user);
-      console.log(lasLoc.x);
       user.sprite.reset(lasLoc.x, lasLoc.y);
-      console.log(user.sprite.x);
     }
   }
   var img = new Image();
