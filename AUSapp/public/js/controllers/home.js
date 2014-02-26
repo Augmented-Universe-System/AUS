@@ -1,14 +1,64 @@
 angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope, $http) {
 
   var sock = new SockJS('/sock');
+  var game;
+  var gameWidth;
+  var gameHeight;
+  gameWidth = window.innerWidth - 310;
+  gameHeight = window.innerHeight - 50;
+
+  setTimeout( function() {
+    game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameCanvas', { preload: preload, create: create, update: update });
+  }, 5500);
+
   $scope.users = [];
   $scope.avatar = {};
   $scope.avatarUrl = {};
   $scope.messages = [];
   $scope.myself = null;
+  $scope.fruits = [];
   $scope.testI = 0;
+  var startingLocations = [
+    {x: 10, y: 10},
+    {x: 400, y: 10},
+    {x: 400, y: 400},
+    {x: 10, y: 400},
+    {x: 100, y: 100},
+    {x: 300, y: 100},
+    {x: 300, y: 300},
+    {x: 100, y: 300}
+  ];
 
-  var canvas, ctx;
+
+  function preload() {
+    game.stage.backgroundColor = '#eeeeee';
+    for ( var i = 0; i < $scope.users.length; i++ ) {
+      var name = $scope.users[i].name;
+      game.load.image(name, $scope.avatarUrl[name]);
+      console.log($scope.avatarUrl[name]);
+    }
+  }
+
+  function create() {
+    for ( var i = 0; i < $scope.users.length; i++ ) {
+      var user = $scope.users[i];
+      user.sprite = game.add.sprite(user.locations[0].x, user.locations[0].y, user.name);
+      console.log(user.name + " sprite:");
+      console.log(user.sprite);
+    }
+  }
+
+  function update() {
+    for ( var i = 0; i < $scope.users.length; i++ ) {
+      var user = $scope.users[i];
+      var lasLoc = lastLocation(user);
+      console.log(lasLoc.x);
+      user.sprite.reset(lasLoc.x, lasLoc.y);
+      console.log(user.sprite.x);
+    }
+  }
+  var img = new Image();
+  img.src = "images/ausimg1.png";
 
   function User(name) {
     console.log("creating new user");
@@ -27,8 +77,9 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     console.log("adding user");
     var newUser = new User(name);
     $scope.users.push(newUser);
+
     callback(u);
-  }
+    }
 
   $scope.formatTwelve = function(date) {
     var hours = date.getHours();
@@ -42,13 +93,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   }
 
   $scope.init = function() {
-
-    canvas = document.getElementById('gameCanvas');
-    ctx = canvas.getContext('2d');
-
-    canvas.width = window.innerWidth - 310;
-    canvas.height = window.innerHeight - 50;
-    canvas.style.border = "1px solid";
 
     // get user from server API
     $http.get('/user').success(function(data) {
@@ -82,12 +126,14 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     if (message.type == "user-update") {
       findUser(message.name, function(user) {
         user.locations.push({x: message.x, y: message.y});
-        render();
+        //render();
         $scope.$apply();
       });
     } else if (message.type == "user-chat") {
       $scope.messages.push(message);
       console.log($scope.messages);
+    } else if (message.type == "fruit-update") {
+      $scope.fruits = message.fruits;
     }
   };
 
@@ -116,6 +162,14 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     }
       sock.send(JSON.stringify(chatMessage));
       $scope.messageText = "";
+
+/*
+    var fruitMessage = {
+      type: "fruit-update",
+      messageBody: "fruit message"
+    };
+    sock.send(JSON.stringify(fruitMessage));
+*/
   };
 
   function render() {
@@ -151,6 +205,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       }
       //ctx.drawImage($scope.avatar[user.name], x, y);
 
+
+      /*
       ctx.beginPath();
       ctx.moveTo(userFirstLoc.x, userFirstLoc.y);
       for(i = 0; i < user.locations.length; i++) {
@@ -161,9 +217,71 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
       ctx.font = "13px Arial";
       ctx.fillText(user.name, x - 10, y - 5);
+      */
+      //pathIntersection(user.name, x, y);
       //ctx.fillText(user.name + " (" + counter + ")", x - 20, y - 5);
       //counter ++;
     }
+
+    // draw fruits
+    console.log("fruits.length: " + $scope.fruits.length);
+    for (var i = 0; i < $scope.fruits.length; i++) {
+      console.log("Fruit location from before the loop: " + $scope.fruits[i].fruitLocation.x + ", " + $scope.fruits[i].fruitLocation.y);
+      ctx.drawImage(img, $scope.fruits[i].fruitLocation.x, $scope.fruits[i].fruitLocation.y);
+      //console.log("This is the fruits array.");
+    }
+  }
+
+  //extra
+  function relocating(user) {
+    //avatar first drawn on specific location
+    //old GPS location minus new GPS location
+    var gpsLocX = Math.abs(user.locations[user.locations.length-2].x - user.locations[user.locations.length-1].x);
+    var gpsLocY = Math.abs(user.locations[user.locations.length-2].y - user.locations[user.locations.length-1].y);
+    //take difference, multiply it by some number
+    var avatarLocX = gpsLocX * 200;
+    var avatarLocY = gpsLocY * 200;
+    //return new locations for the avatar
+    return [avatarLocX, avatarLocY];
+    //add location to avatar's location, which in turn moves avatar on canvas
+  }
+
+
+
+  function pathIntersection(user, x, y) {
+    //check the next position of user
+    //check to see if user hits another's path
+      //need to minus all the widths of each user and see if anyone hits anyone else
+    for (var u = 0; u < $scope.users.length; u++) {
+      for (var ul = 1; ul < $scope.users[u].locations.length-1; ul++) {
+        
+        console.log("This is the length of the users' locations: " + $scope.users[u].locations.length);
+        console.log("u: " + u);
+        console.log("ul: " + ul);
+        console.log("This is the input of x: " + Math.abs(x) + "\n");
+        console.log("This is the abs of x: " + Math.abs($scope.users[u].locations[ul].x) + "\n");
+        console.log("This is the input of y: " + Math.abs(y) + "\n");
+        console.log("This is the abs of y: " + Math.abs($scope.users[u].locations[ul].y) + "\n");
+       
+        if ( ((Math.abs(x) > Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) == Math.abs($scope.users[u].locations[ul].y)) || 
+          (Math.abs(x) < Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) == Math.abs($scope.users[u].locations[ul].y)) ||
+          (Math.abs(x) == Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) > Math.abs($scope.users[u].locations[ul].y)) ||
+          (Math.abs(x) == Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) < Math.abs($scope.users[u].locations[ul].y)) ||
+          (Math.abs(x) < Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) > Math.abs($scope.users[u].locations[ul].y)) ||
+          (Math.abs(x) > Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) < Math.abs($scope.users[u].locations[ul].y)) ||
+          (Math.abs(x) > Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) > Math.abs($scope.users[u].locations[ul].y)) ||
+          (Math.abs(x) < Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) < Math.abs($scope.users[u].locations[ul].y)) ||
+          (Math.abs(x) == Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) == Math.abs($scope.users[u].locations[ul].y))) && (Math.abs(x) != Math.abs($scope.myself.locations[ul].x) && Math.abs(y) != Math.abs($scope.myself.locations[ul].y)) ) {
+            alert("User " + user.name + " has lost the game.");
+            //for (var g = 0; g < $scope.myself.locations.length; g++) {
+              //console.log("This is the user's location number " + g + ": " + $scope.myself.locations[g].x + ", " + $scope.myself.locations[g].y);
+            //}
+            //console.log("User " + user.name + " has lost the game.");
+        }
+      }
+    }
+    //if hit path, user lose
+    //else if not hit path, do nothing
   }
 
 
