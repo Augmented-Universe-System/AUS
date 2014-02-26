@@ -11,6 +11,8 @@ a {
 #gameCanvas {
   position: fixed;
   float: left;
+  border-width: 1px;
+  border-style: solid;
 }
 #user-list {
   list-style: none;
