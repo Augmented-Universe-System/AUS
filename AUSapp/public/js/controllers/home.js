@@ -9,7 +9,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   setTimeout( function() {
     game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameCanvas', { preload: preload, create: create, update: update });
-  }, 5500);
+  }, 2500);
 
   $scope.users = [];
   $scope.avatar = {};
@@ -28,7 +28,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     {x: 300, y: 300},
     {x: 100, y: 300}
   ];
-
+  var img = new Image();
+  img.src = "images/ausimg1.png";
 
   function preload() {
     game.stage.backgroundColor = '#eeeeee';
@@ -55,8 +56,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       user.sprite.reset(lasLoc.x, lasLoc.y);
     }
   }
-  var img = new Image();
-  img.src = "images/ausimg1.png";
 
   function User(name) {
     console.log("creating new user");
@@ -136,31 +135,15 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   };
 
   $scope.sendChat = function() {
-    for ( var i = 0; i < $scope.users.length; i++ ) {
-      var user = $scope.users[i];
-      var d = new Date();
-      if(user.name == $scope.myself.name) {
-        var chatMessage = {
-          type: "user-chat",
-          name: $scope.myself.name,
-          messageBody: $scope.messageText,
-          chatDate: $scope.formatTwelve(d),
-          doChange: 'yes'
-        };
-      }
-      else {
-        var chatMessage = {
-          type: "user-chat",
-          name: user.name,
-          messageBody: $scope.messageText,
-          chatDate: $scope.formatTwelve(d),
-          doChange: 'no'
-        };
-      }
-    }
-      sock.send(JSON.stringify(chatMessage));
-      $scope.messageText = "";
-
+    var d = new Date();
+    var chatMessage = {
+      type: "user-chat",
+      name: $scope.myself.name,
+      messageBody: $scope.messageText,
+      chatDate: $scope.formatTwelve(d)
+    };
+    sock.send(JSON.stringify(chatMessage));
+    $scope.messageText = "";
 /*
     var fruitMessage = {
       type: "fruit-update",
