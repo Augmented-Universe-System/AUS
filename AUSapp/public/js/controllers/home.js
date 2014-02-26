@@ -2,7 +2,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   var sock = new SockJS('/sock');
   $scope.users = [];
-  $scope.fruits = [];
   $scope.avatar = {};
   $scope.avatarUrl = {};
   $scope.messages = [];
@@ -16,11 +15,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     this.name = name;
     this.locations = [{}];
     getAvatar(name);
-  }
-
-  function Fruit(x, y) {
-    console.log("Creating new fruit.");
-    this.fruitLocation = [{}];
   }
 
   function findUser(name, callback) {
@@ -157,32 +151,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       //counter ++;
     }
   }
-
-  function generateFruit() {
-    var minX = 10;
-    var maxX = 590;
-    var randX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
-
-    var minY = 10;
-    var maxY = 440;
-    var randY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
-
-    var newFruit = new Fruit(randX, randY);
-
-    $scope.fruits.push(newFruit);
-
-    $scope.apply;
-
-    var serverMessage = {
-        type: "user-update",
-        name: $scope.myself.name,
-        x: randX,
-        y: randY
-
-       };
-    sock.send(JSON.stringify(serverMessage));
-  }
-
 
   //extra
   function relocating(user) {

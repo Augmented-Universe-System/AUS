@@ -13,6 +13,20 @@ module.exports  = function(server, db) {
     this.fruitLocation = [{}];
   }
 
+  function generateFruit() {
+    var minX = 10;
+    var maxX = 590;
+    var randX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+
+    var minY = 10;
+    var maxY = 440;
+    var randY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+
+    var newFruit = new Fruit(randX, randY);
+    $scope.fruits.push(newFruit);
+    $scope.apply;
+  }
+
   sockServer.on('connection', function(conn) {
       connections.push(conn);
       var number = connections.length;
@@ -33,6 +47,9 @@ module.exports  = function(server, db) {
               });
               console.log(user.username);
             });
+          }
+          if ( messageData.type == "fruit-update" ) {
+            generateFruit();   
           }
       });
       conn.on('close', function() {
