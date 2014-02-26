@@ -46,8 +46,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     canvas = document.getElementById('gameCanvas');
     ctx = canvas.getContext('2d');
 
-    canvas.width = 600;
-    canvas.height = 450;
+    canvas.width = window.innerWidth - 310;
+    canvas.height = window.innerHeight - 50;
     canvas.style.border = "1px solid";
 
     // get user from server API
@@ -92,21 +92,35 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   };
 
   $scope.sendChat = function() {
-    var d = new Date();
-    var chatMessage = {
-      type: "user-chat",
-      name: $scope.myself.name,
-      messageBody: $scope.messageText,
-      chatDate: $scope.formatTwelve(d),
-      doChange: 'yes'
-    };
+    for ( var i = 0; i < $scope.users.length; i++ ) {
+      var user = $scope.users[i];
+      var d = new Date();
+      if(user.name == $scope.myself.name) {
+        var chatMessage = {
+          type: "user-chat",
+          name: $scope.myself.name,
+          messageBody: $scope.messageText,
+          chatDate: $scope.formatTwelve(d),
+          doChange: 'yes'
+        };
+      }
+      else {
+        var chatMessage = {
+          type: "user-chat",
+          name: user.name,
+          messageBody: $scope.messageText,
+          chatDate: $scope.formatTwelve(d),
+          doChange: 'no'
+        };
+      }
+    }
       sock.send(JSON.stringify(chatMessage));
       $scope.messageText = "";
   };
 
   function render() {
     console.log($scope.users);
-    ctx.clearRect(0, 0, 600, 450);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     var counter = 1;
 
     for ( var i = 0; i < $scope.users.length; i++ ) {
@@ -202,11 +216,11 @@ function testLoop() {
 
     // generate random coordinates between 10-400 for x and 10-300 for y
     var minX = 10;
-    var maxX = 400;
+    var maxX = canvas.width - 50;
     var randX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
 
     var minY = 10;
-    var maxY = 400;
+    var maxY = canvas.height - 50;
     var randY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
 
     console.log("random coordinates: rand x: " + randX + ", rand y: " + randY );
