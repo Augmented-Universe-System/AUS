@@ -6,7 +6,8 @@
 
     <div class="chatWindow">
         <p ng-class="{blue: message.name == myself.name}" ng-repeat="message in messages track by $index">
-          <img src="{{ avatarUrl[message.name] }}" height="40px" width="40px" />
+          <img ng-if="message.name != '' " src="{{ avatarUrl[message.name] }}" height="40px" width="40px" />
+          <img ng-if="message.name == '' " src="images/aus.jpg" height="40px" width="40px" />
           <span>{{ message.name }}</span>:
           <span>{{ message.messageBody }}</span>
           <span>({{ message.chatDate }})</span>

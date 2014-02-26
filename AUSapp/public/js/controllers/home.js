@@ -98,7 +98,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       var d = new Date();
       // create a Message to send
       var chatMessage = {
-        type: "user-chat",
+        type: "user-login",
         name: "",
         messageBody: data.username + " has logged in!",
         chatDate: $scope.formatTwelve(d)
@@ -126,7 +126,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
         //render();
         $scope.$apply();
       });
-    } else if (message.type == "user-chat") {
+    } else if (message.type == "user-chat" || message.type == "user-login") {
       $scope.messages.push(message);
       console.log($scope.messages);
     } else if (message.type == "fruit-update") {
