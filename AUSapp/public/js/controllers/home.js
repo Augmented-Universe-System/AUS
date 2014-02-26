@@ -6,9 +6,12 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   $scope.avatarUrl = {};
   $scope.messages = [];
   $scope.myself = null;
+  $scope.fruits = [];
   $scope.testI = 0;
 
   var canvas, ctx;
+  var img = new Image();
+  img.src = "images/ausimg1.png";
 
   function User(name) {
     console.log("creating new user");
@@ -27,8 +30,9 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     console.log("adding user");
     var newUser = new User(name);
     $scope.users.push(newUser);
+
     callback(u);
-  }
+    }
 
   var d = new Date();
 
@@ -89,6 +93,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     } else if (message.type == "user-chat") {
       $scope.messages.push(message);
       console.log($scope.messages);
+    } else if (message.type == "fruit-update") {
+      $scope.fruits = message.fruits;
     }
   };
 
@@ -101,6 +107,14 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     };
       sock.send(JSON.stringify(chatMessage));
       $scope.messageText = "";
+
+/*
+    var fruitMessage = {
+      type: "fruit-update",
+      messageBody: "fruit message"
+    };
+    sock.send(JSON.stringify(fruitMessage));
+*/
   };
 
   function render() {
@@ -136,6 +150,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       }
       //ctx.drawImage($scope.avatar[user.name], x, y);
 
+
+      /*
       ctx.beginPath();
       ctx.moveTo(userFirstLoc.x, userFirstLoc.y);
       for(i = 0; i < user.locations.length; i++) {
@@ -146,9 +162,18 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
       ctx.font = "13px Arial";
       ctx.fillText(user.name, x - 10, y - 5);
+      */
       //pathIntersection(user.name, x, y);
       //ctx.fillText(user.name + " (" + counter + ")", x - 20, y - 5);
       //counter ++;
+    }
+
+    // draw fruits
+    console.log("fruits.length: " + $scope.fruits.length);
+    for (var i = 0; i < $scope.fruits.length; i++) {
+      console.log("Fruit location from before the loop: " + $scope.fruits[i].fruitLocation.x + ", " + $scope.fruits[i].fruitLocation.y);
+      ctx.drawImage(img, $scope.fruits[i].fruitLocation.x, $scope.fruits[i].fruitLocation.y);
+      //console.log("This is the fruits array.");
     }
   }
 

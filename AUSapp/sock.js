@@ -8,9 +8,9 @@ module.exports  = function(server, db) {
 
   var sockServer = sockjs.createServer();
 
-  function Fruit(x, y) {
+  function Fruit(xx, yy) {
     console.log("Creating new fruit.");
-    this.fruitLocation = [{}];
+    this.fruitLocation = [{x: xx, y: yy}];
   }
 
   function generateFruit() {
@@ -23,8 +23,7 @@ module.exports  = function(server, db) {
     var randY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
 
     var newFruit = new Fruit(randX, randY);
-    $scope.fruits.push(newFruit);
-    $scope.apply;
+    fruits.push(newFruit);
   }
 
   sockServer.on('connection', function(conn) {
@@ -33,10 +32,6 @@ module.exports  = function(server, db) {
       //conn.write("Welcome, User " + number);
       conn.on('data', function(message) {
           var messageData = eval("(" + message + ")");
-          // inform all connected users
-          for (var ii=0; ii < connections.length; ii++) {
-              connections[ii].write(message);
-          }
           if ( messageData.type == "user-update" ) {
             // update the DB
             User.findOne( { username: messageData.name }, function(err, user) {
@@ -49,7 +44,14 @@ module.exports  = function(server, db) {
             });
           }
           if ( messageData.type == "fruit-update" ) {
-            generateFruit();   
+            console.log("Sock received fruit update message.");
+            generateFruit();
+            messageData.fruits = fruits;
+          }
+          // inform all connected users
+          for (var ii=0; ii < connections.length; ii++) {
+              var outgoingMessage = JSON.stringify(messageData);
+              connections[ii].write(outgoingMessage);
           }
       });
       conn.on('close', function() {
