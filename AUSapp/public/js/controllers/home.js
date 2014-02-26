@@ -336,7 +336,7 @@ function testLoop() {
     var randX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
 
     var minY = 10;
-    var maxY = canvas.height - 50;
+    var maxY = gameHeight - 50;
     var randY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
 
     console.log("random coordinates: rand x: " + randX + ", rand y: " + randY );
