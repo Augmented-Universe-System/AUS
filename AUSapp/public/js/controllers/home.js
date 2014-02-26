@@ -2,9 +2,13 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   var sock = new SockJS('/sock');
   var game;
+  var gameWidth;
+  var gameHeight;
+  gameWidth = window.innerWidth - 310;
+  gameHeight = window.innerHeight - 50;
 
   setTimeout( function() {
-    game = new Phaser.Game(600,450, Phaser.AUTO, 'gameCanvas', { preload: preload, create: create, update: update });
+    game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameCanvas', { preload: preload, create: create, update: update });
   }, 5500);
 
   $scope.users = [];
@@ -132,14 +136,28 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   };
 
   $scope.sendChat = function() {
-    var d = new Date();
-    var chatMessage = {
-      type: "user-chat",
-      name: $scope.myself.name,
-      messageBody: $scope.messageText,
-      chatDate: $scope.formatTwelve(d),
-      doChange: 'yes'
-    };
+    for ( var i = 0; i < $scope.users.length; i++ ) {
+      var user = $scope.users[i];
+      var d = new Date();
+      if(user.name == $scope.myself.name) {
+        var chatMessage = {
+          type: "user-chat",
+          name: $scope.myself.name,
+          messageBody: $scope.messageText,
+          chatDate: $scope.formatTwelve(d),
+          doChange: 'yes'
+        };
+      }
+      else {
+        var chatMessage = {
+          type: "user-chat",
+          name: user.name,
+          messageBody: $scope.messageText,
+          chatDate: $scope.formatTwelve(d),
+          doChange: 'no'
+        };
+      }
+    }
       sock.send(JSON.stringify(chatMessage));
       $scope.messageText = "";
 
@@ -154,7 +172,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   function render() {
     console.log($scope.users);
-    ctx.clearRect(0, 0, 600, 450);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     var counter = 1;
 
     for ( var i = 0; i < $scope.users.length; i++ ) {
@@ -314,11 +332,11 @@ function testLoop() {
 
     // generate random coordinates between 10-400 for x and 10-300 for y
     var minX = 10;
-    var maxX = 400;
+    var maxX = canvas.width - 50;
     var randX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
 
     var minY = 10;
-    var maxY = 400;
+    var maxY = canvas.height - 50;
     var randY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
 
     console.log("random coordinates: rand x: " + randX + ", rand y: " + randY );

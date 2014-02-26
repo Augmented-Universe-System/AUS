@@ -9,7 +9,7 @@ a {
   height: 1000px;
 }
 #gameCanvas {
-  position: relative;
+  position: fixed;
   float: left;
 }
 #user-list {
@@ -25,7 +25,8 @@ a {
 }
 .chatContainer {
   display: block;
-  position: relative;
+  position: fixed;
+  right: 15px;
   float: right;
   height: 450px;
   width: 260px;
@@ -37,6 +38,7 @@ a {
   padding: 0 5px 0 5px;
   background-color: #f8f8f8;
   overflow-y: scroll;
+  word-wrap: break-word;
 }
 .chatTime {
   font-size: 75%;
