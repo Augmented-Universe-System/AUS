@@ -4,8 +4,14 @@ module.exports  = function(server, db) {
   var User = mongoose.model('User');
   var sockjs = require('sockjs');
   var connections = [];
+  var fruits = [];
 
   var sockServer = sockjs.createServer();
+
+  function Fruit(x, y) {
+    console.log("Creating new fruit.");
+    this.fruitLocation = [{}];
+  }
 
   sockServer.on('connection', function(conn) {
       connections.push(conn);
