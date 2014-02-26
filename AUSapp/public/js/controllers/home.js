@@ -332,7 +332,7 @@ function testLoop() {
 
     // generate random coordinates between 10-400 for x and 10-300 for y
     var minX = 10;
-    var maxX = canvas.width - 50;
+    var maxX = gameWidth - 50;
     var randX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
 
     var minY = 10;
