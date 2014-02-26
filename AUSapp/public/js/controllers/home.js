@@ -1,14 +1,57 @@
 angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope, $http) {
 
   var sock = new SockJS('/sock');
+  var game;
+
+  setTimeout( function() {
+    game = new Phaser.Game(600,450, Phaser.AUTO, 'gameCanvas', { preload: preload, create: create, update: update });
+  }, 5500);
+
   $scope.users = [];
   $scope.avatar = {};
   $scope.avatarUrl = {};
   $scope.messages = [];
   $scope.myself = null;
   $scope.testI = 0;
+  var startingLocations = [
+    {x: 10, y: 10},
+    {x: 400, y: 10},
+    {x: 400, y: 400},
+    {x: 10, y: 400},
+    {x: 100, y: 100},
+    {x: 300, y: 100},
+    {x: 300, y: 300},
+    {x: 100, y: 300}
+  ];
 
-  var canvas, ctx;
+
+  function preload() {
+    game.stage.backgroundColor = '#eeeeee';
+    for ( var i = 0; i < $scope.users.length; i++ ) {
+      var name = $scope.users[i].name;
+      game.load.image(name, $scope.avatarUrl[name]);
+      console.log($scope.avatarUrl[name]);
+    }
+  }
+
+  function create() {
+    for ( var i = 0; i < $scope.users.length; i++ ) {
+      var user = $scope.users[i];
+      user.sprite = game.add.sprite(user.locations[0].x, user.locations[0].y, user.name);
+      console.log(user.name + " sprite:");
+      console.log(user.sprite);
+    }
+  }
+
+  function update() {
+    for ( var i = 0; i < $scope.users.length; i++ ) {
+      var user = $scope.users[i];
+      var lasLoc = lastLocation(user);
+      console.log(lasLoc.x);
+      user.sprite.reset(lasLoc.x, lasLoc.y);
+      console.log(user.sprite.x);
+    }
+  }
 
   function User(name) {
     console.log("creating new user");
@@ -43,13 +86,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   $scope.init = function() {
 
-    canvas = document.getElementById('gameCanvas');
-    ctx = canvas.getContext('2d');
-
-    canvas.width = 600;
-    canvas.height = 450;
-    canvas.style.border = "1px solid";
-
     // get user from server API
     $http.get('/user').success(function(data) {
       $scope.myself = new User(data.username);
@@ -82,7 +118,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     if (message.type == "user-update") {
       findUser(message.name, function(user) {
         user.locations.push({x: message.x, y: message.y});
-        render();
+        //render();
         $scope.$apply();
       });
     } else if (message.type == "user-chat") {
