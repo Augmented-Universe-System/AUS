@@ -5,12 +5,13 @@ module.exports  = function(server, db) {
   var sockjs = require('sockjs');
   var connections = [];
   var fruits = [];
+  var MAX_FRUIT = 4;
 
   var sockServer = sockjs.createServer();
 
   function Fruit(xx, yy) {
     console.log("Creating new fruit.");
-    this.fruitLocation = [{x: xx, y: yy}];
+    this.loc = {x: xx, y: yy};
   }
 
   function generateFruit() {
@@ -43,9 +44,10 @@ module.exports  = function(server, db) {
               console.log(user.username);
             });
           }
-          if ( messageData.type == "fruit-update" ) {
-            console.log("Sock received fruit update message.");
-            generateFruit();
+          if ( messageData.type == "user-login" ) {
+            if ( fruits.length < MAX_FRUIT ) {
+              generateFruit();
+            }
             messageData.fruits = fruits;
           }
           // inform all connected users

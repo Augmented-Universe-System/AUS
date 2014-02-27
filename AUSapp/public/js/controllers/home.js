@@ -16,6 +16,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   $scope.messages = [];
   $scope.myself = null;
   $scope.fruits = [];
+  var fruitGroup;
   $scope.testI = 0;
   var startingLocations = [
     {x: 10, y: 10},
@@ -32,6 +33,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   function preload() {
     game.stage.backgroundColor = '#eeeeee';
+    game.load.spritesheet('fruits', 'images/fruitnveg32wh37.png', 32, 32);
     for ( var i = 0; i < $scope.users.length; i++ ) {
       var name = $scope.users[i].name;
       game.load.image(name, $scope.avatarUrl[name]);
@@ -40,11 +42,19 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   }
 
   function create() {
+    fruitGroup = game.add.group();
+    for ( var i = 0; i < $scope.fruits.length; i++ ) {
+      var fruit = $scope.fruits[i];
+      console.log(fruit.loc.x);
+      var f = fruitGroup.create(fruit.loc.x, fruit.loc.y, 'fruits', game.rnd.integerInRange(0, 36));
+      f.name = 'fruit' + i;
+      f.body.immovable = true;
+    }
     for ( var i = 0; i < $scope.users.length; i++ ) {
       var user = $scope.users[i];
       user.sprite = game.add.sprite(user.locations[0].x, user.locations[0].y, user.name);
-      console.log(user.name + " sprite:");
-      console.log(user.sprite);
+      user.sprite.height = 32;
+      user.sprite.width = 32;
     }
   }
 
@@ -133,7 +143,9 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     } else if (message.type == "user-chat" || message.type == "user-login") {
       $scope.messages.push(message);
       console.log($scope.messages);
-    } else if (message.type == "fruit-update") {
+    }
+    if (message.fruits) {
+      console.log("this message has fruit info");
       $scope.fruits = message.fruits;
     }
   };
