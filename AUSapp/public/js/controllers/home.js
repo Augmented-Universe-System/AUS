@@ -2,10 +2,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   var sock = new SockJS('/sock');
   var game;
-  var gameWidth;
-  var gameHeight;
-  gameWidth = window.innerWidth - 310;
-  gameHeight = window.innerHeight - 50;
+  var gameWidth = 960;
+  var gameHeight = 600;
 
   setTimeout( function() {
     game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameCanvas', { preload: preload, create: create, update: update });
@@ -104,7 +102,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       var d = new Date();
       // create a Message to send
       var chatMessage = {
-        type: "user-chat",
+        type: "user-login",
         name: "",
         messageBody: data.username + " has logged in!",
         chatDate: $scope.formatTwelve(d)
@@ -132,7 +130,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
         //render();
         $scope.$apply();
       });
-    } else if (message.type == "user-chat") {
+    } else if (message.type == "user-chat" || message.type == "user-login") {
       $scope.messages.push(message);
       console.log($scope.messages);
     } else if (message.type == "fruit-update") {
