@@ -11,6 +11,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameCanvas', { preload: preload, create: create, update: update });
   }, 2500);
 
+  $scope.oldTime = "";
   $scope.users = [];
   $scope.avatar = {};
   $scope.avatarUrl = {};
@@ -81,6 +82,11 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   $scope.formatTwelve = function(date) {
     var hours = date.getHours();
     var minutes = date.getMinutes();
+
+    // keep track of the hours and minutes of each call to this function
+    $scope.oldTime = hours + " " + minutes;
+    console.log("scope.oldTime: " + $scope.oldTime);
+
     var ampm = hours >= 12 ? 'pm' : 'am';
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
@@ -135,15 +141,29 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   };
 
   $scope.sendChat = function() {
-    var d = new Date();
+    var chatTime = " ";
+    var newDate = new Date();
+    var newHour = newDate.getHours();
+    var newMinutes = newDate.getMinutes();
+    var newTime = newHour + " " + newMinutes;
+    
+    if(newTime == $scope.oldTime){
+        chatTime = " ";
+        console.log("chatTime (if statement): " + chatTime);
+    } else {
+        chatTime = $scope.formatTwelve(newDate);
+        console.log("chatTime in (else): " + chatTime);
+    }
+    
     var chatMessage = {
       type: "user-chat",
       name: $scope.myself.name,
       messageBody: $scope.messageText,
-      chatDate: $scope.formatTwelve(d)
+      chatDate: chatTime
     };
     sock.send(JSON.stringify(chatMessage));
     $scope.messageText = "";
+    document.getElementById("chatWindow").scrollTop = 99999;
 /*
     var fruitMessage = {
       type: "fruit-update",

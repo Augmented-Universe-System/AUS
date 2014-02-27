@@ -4,12 +4,12 @@
 
   <div class="chatContainer">
 
-    <div class="chatWindow">
+    <div id="chatWindow">
         <p ng-repeat="message in messages track by $index">
           <img src="{{ avatarUrl[message.name] }}" height="40px" width="40px" />
-          <span ng-class="{red: message.doChange == 'no', blue: message.doChange == 'yes'}">{{ message.name }}</span>:
-          <span ng-class="{red: message.doChange == 'no', blue: message.doChange == 'yes'}">{{ message.messageBody }}</span>
-          <span ng-class="{red: message.doChange == 'no', blue: message.doChange == 'yes'}">({{ message.chatDate }})</span>
+          <span  id="msg-name" ng-class="{red: message.doChange == 'no', blue: message.doChange == 'yes'}">{{ message.name }}</span>:
+          <span id="msg-body" ng-class="{red: message.doChange == 'no', blue: message.doChange == 'yes'}">{{ message.messageBody }}</span>
+          <span id="msg-date" ng-class="{red: message.doChange == 'no', blue: message.doChange == 'yes'}">{{ message.chatDate }}</span>
         </p>
     </div> <!-- /chatWindow -->
 
@@ -23,9 +23,3 @@
   </div><!-- /chatContainer -->
 
 </div><!-- /innerContainer -->
-
-<!--  <div id="myinfo">
-    <input type="text" value="{{ myname }}" readonly="readonly" />
-    <input type="number" value="{{ myx }}" readonly="readonly" />
-    <input type="number" value="{{ myy }}" readonly="readonly" />
-  </div><!-- /myInfo -->
