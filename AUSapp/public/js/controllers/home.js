@@ -31,7 +31,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   sock.onopen = function() {
     $scope.init();
     //setInterval(testLoop, 2000);
-    //trackLocation();
+    trackLocation();
   };
 
   $scope.init = function() {
@@ -190,8 +190,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       textGroup.add(scoreText);
       //console.log("game.input.activePointer:  " + game.input.activePointer.x);
 
-      //user.sprite.reset(lastLoc.x, lastLoc.y);
-      game.physics.moveToPointer($scope.myself.sprite,300,game.input.activePointer);
+      user.sprite.reset(lastLoc.x, lastLoc.y);
+      //game.physics.moveToPointer($scope.myself.sprite,300,game.input.activePointer);
 
       //game.world.remove(textGroup);
     }
