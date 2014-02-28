@@ -123,6 +123,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       console.log("this message has fruit info");
       $scope.fruits = message.fruits;
     }
+    document.getElementById("chatWindow").scrollTop = 99999;
   };
 
   function preload() {
@@ -169,13 +170,33 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   }
 
   function update() {
+    if('undefined' !== typeof textGroup)
+    {
+      textGroup.destroy();
+    }
+    textGroup = game.add.group();
+
     for ( var i = 0; i < $scope.users.length; i++ ) {
       var user = $scope.users[i];
-      var lasLoc = lastLocation(user);
-      //user.sprite.reset(lasLoc.x, lasLoc.y);
+      var lastLoc = lastLocation(user);
+
+      // draw score by the avatar
+      scoreText = game.add.text(
+        game.input.activePointer.x - 5, 
+        game.input.activePointer.y - 5, 
+        user.score,
+        { size: '5px' }
+        );
+      textGroup.add(scoreText);
+      //console.log("game.input.activePointer:  " + game.input.activePointer.x);
+
+      //user.sprite.reset(lastLoc.x, lastLoc.y);
       game.physics.moveToPointer($scope.myself.sprite,300,game.input.activePointer);
+
+      //game.world.remove(textGroup);
     }
     game.physics.collide($scope.myself.sprite, fruitGroup, selfCollideFruit, null, this);
+
   }
 
   function selfCollideFruit(self, fruit) {
@@ -231,7 +252,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     };
     sock.send(JSON.stringify(chatMessage));
     $scope.messageText = "";
-    document.getElementById("chatWindow").scrollTop = 99999;
+    
 /*
     var fruitMessage = {
       type: "fruit-update",
