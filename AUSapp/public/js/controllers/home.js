@@ -84,6 +84,10 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       $scope.avatarUrl[name] = data.avatar_url;
       if ( !gameLoaded && name == $scope.myself.name ) {
         game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameCanvas', { preload: preload, create: create, update: update });
+      } else {
+        findUser(name, function(user) {
+          addUserSprite(user);
+        });
       }
     }).error(function(data) {
       console.log(data);
@@ -147,10 +151,14 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
     for ( var i = 0; i < $scope.users.length; i++ ) {
       var user = $scope.users[i];
-      user.sprite = game.add.sprite(user.locations[0].x, user.locations[0].y, user.name);
-      user.sprite.height = 32;
-      user.sprite.width = 32;
+      addUserSprite(user);
     }
+  }
+
+  function addUserSprite(user) {
+    user.sprite = game.add.sprite(user.locations[0].x, user.locations[0].y, user.name);
+     user.sprite.height = 32;
+    user.sprite.width = 32;
   }
 
   function addOneFruit(name, x, y) {
