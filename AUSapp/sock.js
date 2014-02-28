@@ -3,11 +3,14 @@ module.exports  = function(server, db) {
   var mongoose = require('mongoose');
   var User = mongoose.model('User');
   var sockjs = require('sockjs');
+  var sockServer = sockjs.createServer();
   var connections = [];
+
   var fruits = [];
   var MAX_FRUIT = 4;
-
-  var sockServer = sockjs.createServer();
+  for (var i = 0; i < MAX_FRUIT; i++ ) {
+    generateFruit();
+  };
 
   function Fruit(xx, yy) {
     console.log("Creating new fruit.");
@@ -45,9 +48,11 @@ module.exports  = function(server, db) {
             });
           }
           if ( messageData.type == "user-login" ) {
-            if ( fruits.length < MAX_FRUIT ) {
-              generateFruit();
-            }
+            messageData.fruits = fruits;
+          } 
+          if ( messageData.type == "user-score") {
+            var f = parseInt(messageData.fruitName.slice(-1));
+            fruits[f] = generateFruit();
             messageData.fruits = fruits;
           }
           // inform all connected users

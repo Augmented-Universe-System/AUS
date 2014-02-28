@@ -8,7 +8,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   sock.onopen = function() {
     $scope.init();
-    setInterval(testLoop, 2000);
+    //setInterval(testLoop, 2000);
     //trackLocation();
   };
 
@@ -84,6 +84,11 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       $scope.messages.push(message);
       console.log($scope.messages);
     }
+    else if (message.type == "user-score") {
+      findUser(message.name, function(user) {
+        user.score = message.userScore;
+        $scope.$apply();
+    }
     if (message.fruits) {
       console.log("this message has fruit info");
       $scope.fruits = message.fruits;
@@ -143,8 +148,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     for ( var i = 0; i < $scope.users.length; i++ ) {
       var user = $scope.users[i];
       var lasLoc = lastLocation(user);
-      user.sprite.reset(lasLoc.x, lasLoc.y);
-      //game.physics.moveToPointer($scope.myself.sprite,300,game.input.activePointer);
+      //user.sprite.reset(lasLoc.x, lasLoc.y);
+      game.physics.moveToPointer($scope.myself.sprite,300,game.input.activePointer);
     }
     game.physics.collide($scope.myself.sprite, fruitGroup, selfCollideFruit, null, this);
   }
@@ -155,7 +160,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     $scope.myself.score++;
     var scoreMessage = {
       type: "user-score",
-      user: $scope.myself.name,      
+      name: $scope.myself.name,      
       userScore: $scope.myself.score,
       fruitName: fruit.name
     };
