@@ -182,10 +182,10 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
       // draw score by the avatar
       scoreText = game.add.text(
-        game.input.activePointer.x - 5, 
-        game.input.activePointer.y - 5, 
-        user.score,
-        { size: '5px' }
+        lastLoc.x  + 6, 
+        lastLoc.y - 14, 
+        "(" + 4 + ")",
+        { font: '14px Arial' }
         );
       textGroup.add(scoreText);
       //console.log("game.input.activePointer:  " + game.input.activePointer.x);
