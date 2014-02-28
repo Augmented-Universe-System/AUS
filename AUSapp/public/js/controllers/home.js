@@ -161,24 +161,33 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   }
 
   function update() {
+    if('undefined' !== typeof textGroup)
+    {
+      textGroup.destroy();
+    }
+    textGroup = game.add.group();
+
     for ( var i = 0; i < $scope.users.length; i++ ) {
       var user = $scope.users[i];
-      var lasLoc = lastLocation(user);
+      var lastLoc = lastLocation(user);
 
       // draw score by the avatar
-      //var txt = game.add.group();
       scoreText = game.add.text(
-        lasLoc.x - 25, 
-        lasLoc.y - 25, 
-        "(user score)", 
-        { fontSize: '32px', fill: 'white', stroke: "black", strokeThickness: 5 }
+        game.input.activePointer.x - 5, 
+        game.input.activePointer.y - 5, 
+        user.score,
+        { size: '5px' }
         );
-      //txt.add(scoreText);
+      textGroup.add(scoreText);
+      //console.log("game.input.activePointer:  " + game.input.activePointer.x);
 
-      //user.sprite.reset(lasLoc.x, lasLoc.y);
+      //user.sprite.reset(lastLoc.x, lastLoc.y);
       game.physics.moveToPointer($scope.myself.sprite,300,game.input.activePointer);
+
+      //game.world.remove(textGroup);
     }
     game.physics.collide($scope.myself.sprite, fruitGroup, selfCollideFruit, null, this);
+
   }
 
   function selfCollideFruit(self, fruit) {
