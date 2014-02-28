@@ -87,6 +87,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       } else {
         findUser(name, function(user) {
           addUserSprite(user);
+          console.log("displaying another user");
         });
       }
     }).error(function(data) {
