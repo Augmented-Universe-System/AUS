@@ -144,6 +144,15 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       var user = $scope.users[i];
       var lasLoc = lastLocation(user);
       user.sprite.reset(lasLoc.x, lasLoc.y);
+      // draw score by the avatar
+      //var txt = game.add.group();
+      scoreText = game.add.text(
+        lasLoc.x - 25, 
+        lasLoc.y - 25, 
+        "", 
+        { fontSize: '32px', fill: 'white', stroke: "black", strokeThickness: 5 }
+        );
+      //txt.add(scoreText);
       //game.physics.moveToPointer($scope.myself.sprite,300,game.input.activePointer);
     }
     game.physics.collide($scope.myself.sprite, fruitGroup, selfCollideFruit, null, this);
