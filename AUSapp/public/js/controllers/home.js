@@ -2,8 +2,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   var sock = new SockJS('/sock');
   var game;
-  var gameWidth = 960;
-  var gameHeight = 600;
+  var gameWidth = 380;    // used to be 960
+  var gameHeight = 320;   // used to be 600
 
   setTimeout( function() {
     game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameCanvas', { preload: preload, create: create, update: update });
