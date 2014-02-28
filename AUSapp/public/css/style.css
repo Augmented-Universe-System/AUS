@@ -11,7 +11,7 @@ a {
   width: 486px;
 }
 .innerContainer {
-  width: 385px;
+  width: 485px;
   height: 325px;
 }
 #gameCanvas {
@@ -34,8 +34,8 @@ a {
   display: block;
   position: relative;
   float: right;
-  height: 100px;
-  width: 0px;
+  height: 280px;
+  width: 100px;
 }
 #chatWindow {
   display: block;
@@ -45,6 +45,12 @@ a {
   background-color: #f8f8f8;
   overflow-y: scroll;
   word-wrap: break-word;
+}
+.chatInputContainer {
+  height: 15px;
+}
+.chatInput {
+  width: 100px;
 }
 .chatTime {
   font-size: 75%;
