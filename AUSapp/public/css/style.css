@@ -33,10 +33,10 @@ a {
 }
 .chatContainer {
   display: block;
-  position: absolute;
-  right: 725px;
+  position: relative;
+  float: right;
   height: 100px;
-  width: 101px;
+  width: 0px;
 }
 #chatWindow {
   display: block;
