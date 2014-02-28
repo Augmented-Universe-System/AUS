@@ -9,7 +9,7 @@ module.exports  = function(server, db) {
   var fruits = [];
   var MAX_FRUIT = 4;
   for (var i = 0; i < MAX_FRUIT; i++ ) {
-    generateFruit();
+    fruits[i] = generateFruit();
   };
 
   function Fruit(xx, yy) {
@@ -19,15 +19,16 @@ module.exports  = function(server, db) {
 
   function generateFruit() {
     var minX = 10;
-    var maxX = 590;
+    var maxX = 380;
     var randX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
 
     var minY = 10;
-    var maxY = 440;
+    var maxY = 320;
     var randY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
 
     var newFruit = new Fruit(randX, randY);
-    fruits.push(newFruit);
+    //fruits.push(newFruit);
+    return newFruit;
   }
 
   sockServer.on('connection', function(conn) {

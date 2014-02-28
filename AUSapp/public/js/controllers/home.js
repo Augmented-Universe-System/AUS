@@ -6,6 +6,28 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   var gameWidth = 380;    // used to be 960
   var gameHeight = 320;   // used to be 600
 
+  $scope.oldTime = "";
+  $scope.users = [];
+  $scope.avatar = {};
+  $scope.avatarUrl = {};
+  $scope.messages = [];
+  $scope.myself = null;
+  $scope.fruits = [];
+  var fruitGroup;
+  $scope.testI = 0;
+  var startingLocations = [
+    {x: 10, y: 10},
+    {x: 400, y: 10},
+    {x: 400, y: 400},
+    {x: 10, y: 400},
+    {x: 100, y: 100},
+    {x: 300, y: 100},
+    {x: 300, y: 300},
+    {x: 100, y: 300}
+  ];
+  var img = new Image();
+  img.src = "images/ausimg1.png";
+
   sock.onopen = function() {
     $scope.init();
     //setInterval(testLoop, 2000);
@@ -87,35 +109,17 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     else if (message.type == "user-score") {
       findUser(message.name, function(user) {
         user.score = message.userScore;
+
+        var f = parseInt(message.fruitName.slice(-1));
+        addOneFruit(message.fruitName, $scope.fruits[f].loc.x, $scope.fruits[f].loc.y);
         $scope.$apply();
-    });
+      });
+    }
     if (message.fruits) {
       console.log("this message has fruit info");
       $scope.fruits = message.fruits;
     }
   };
-
-  $scope.oldTime = "";
-  $scope.users = [];
-  $scope.avatar = {};
-  $scope.avatarUrl = {};
-  $scope.messages = [];
-  $scope.myself = null;
-  $scope.fruits = [];
-  var fruitGroup;
-  $scope.testI = 0;
-  var startingLocations = [
-    {x: 10, y: 10},
-    {x: 400, y: 10},
-    {x: 400, y: 400},
-    {x: 10, y: 400},
-    {x: 100, y: 100},
-    {x: 300, y: 100},
-    {x: 300, y: 300},
-    {x: 100, y: 300}
-  ];
-  var img = new Image();
-  img.src = "images/ausimg1.png";
 
   function preload() {
     game.stage.backgroundColor = '#eeeeee';
@@ -129,19 +133,31 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   function create() {
     fruitGroup = game.add.group();
+    fruitGroup.createMultiple(10, 'fruits', game.rnd.integerInRange(0, 36));
+    
+
     for ( var i = 0; i < $scope.fruits.length; i++ ) {
-      var fruit = $scope.fruits[i];
-      console.log(fruit.loc.x);
-      var f = fruitGroup.create(fruit.loc.x, fruit.loc.y, 'fruits', game.rnd.integerInRange(0, 36));
-      f.name = 'fruit' + i;
-      f.body.immovable = true;
+      //var fruit = $scope.fruits[i];
+      //var f = fruitGroup.create(fruit.loc.x, fruit.loc.y, 'fruits', game.rnd.integerInRange(0, 36));
+      //f.name = 'fruit' + i;
+      //f.body.immovable = true;
+
+      addOneFruit('fruit' + i, $scope.fruits[i].loc.x, $scope.fruits[i].loc.y);
     }
+
     for ( var i = 0; i < $scope.users.length; i++ ) {
       var user = $scope.users[i];
       user.sprite = game.add.sprite(user.locations[0].x, user.locations[0].y, user.name);
       user.sprite.height = 32;
       user.sprite.width = 32;
     }
+  }
+
+  function addOneFruit(name, x, y) {
+    var fruit = fruitGroup.getFirstDead();
+    fruit.name = name;
+    fruit.body.immovable = true;
+    fruit.reset(x, y);
   }
 
   function update() {
@@ -171,7 +187,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     $scope.myself.score++;
     var scoreMessage = {
       type: "user-score",
-      name: $scope.myself.name,      
+      name: $scope.myself.name,
       userScore: $scope.myself.score,
       fruitName: fruit.name
     };
