@@ -119,6 +119,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       console.log("this message has fruit info");
       $scope.fruits = message.fruits;
     }
+    document.getElementById("chatWindow").scrollTop = 99999;
   };
 
   function preload() {
@@ -243,7 +244,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     };
     sock.send(JSON.stringify(chatMessage));
     $scope.messageText = "";
-    document.getElementById("chatWindow").scrollTop = 99999;
+    
 /*
     var fruitMessage = {
       type: "fruit-update",
