@@ -19,11 +19,11 @@ module.exports  = function(server, db) {
 
   function generateFruit() {
     var minX = 10;
-    var maxX = 380;
+    var maxX = 350;
     var randX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
 
     var minY = 10;
-    var maxY = 320;
+    var maxY = 290;
     var randY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
 
     var newFruit = new Fruit(randX, randY);
