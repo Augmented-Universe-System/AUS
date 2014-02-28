@@ -2,12 +2,93 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   var sock = new SockJS('/sock');
   var game;
+  var gameLoaded = false;
   var gameWidth = 380;    // used to be 960
   var gameHeight = 320;   // used to be 600
 
-  setTimeout( function() {
-    game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameCanvas', { preload: preload, create: create, update: update });
-  }, 2500);
+  sock.onopen = function() {
+    $scope.init();
+    setInterval(testLoop, 2000);
+    //trackLocation();
+  };
+
+  $scope.init = function() {
+
+    // get user from server API
+    $http.get('/user').success(function(data) {
+      $scope.myself = new User(data.username);
+      $scope.users.push($scope.myself);
+      var d = new Date();
+      // create a Message to send
+      var chatMessage = {
+        type: "user-login",
+        name: "",
+        messageBody: data.username + " has logged in!",
+        chatDate: $scope.formatTwelve(d)
+      };
+      sock.send(JSON.stringify(chatMessage));
+    });
+
+  };
+
+  function User(name) {
+    console.log("creating new user");
+    this.name = name;
+    this.locations = [startingLocations[3]];
+    getAvatar(name);
+    this.score = 0;
+  }
+
+  function findUser(name, callback) {
+    for (var i = 0; i < $scope.users.length; i++) {
+      if ( $scope.users[i].name === name ) {
+        callback($scope.users[i]);
+        return;
+      }
+    }
+    console.log("adding user");
+    var newUser = new User(name);
+    $scope.users.push(newUser);
+
+    callback(newUser);
+  }
+
+  function getAvatar(name) {
+    var url = 'https://api.github.com/users/' + name;
+    $http.get(url).success(function(data) {
+      console.log("success getting image");
+      $scope.avatar[name] = new Image();
+      $scope.avatar[name].src = data.avatar_url;
+      $scope.avatarUrl[name] = data.avatar_url;
+      if ( !gameLoaded && name == $scope.myself.name ) {
+        game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameCanvas', { preload: preload, create: create, update: update });
+      }
+    }).error(function(data) {
+      console.log(data);
+      // set a default avatar if failed
+      $scope.avatar[name].src = "images/ausimg1.png";
+      game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameCanvas', { preload: preload, create: create, update: update });
+    });
+  }
+
+  sock.onmessage = function(e) {
+    var message = eval("(" + e.data + ")");
+    console.log(message);
+    if (message.type == "user-update") {
+      findUser(message.name, function(user) {
+        user.locations.push({x: message.x, y: message.y});
+        //render();
+        $scope.$apply();
+      });
+    } else if (message.type == "user-chat" || message.type == "user-login") {
+      $scope.messages.push(message);
+      console.log($scope.messages);
+    }
+    if (message.fruits) {
+      console.log("this message has fruit info");
+      $scope.fruits = message.fruits;
+    }
+  };
 
   $scope.oldTime = "";
   $scope.users = [];
@@ -63,29 +144,23 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       var user = $scope.users[i];
       var lasLoc = lastLocation(user);
       user.sprite.reset(lasLoc.x, lasLoc.y);
+      //game.physics.moveToPointer($scope.myself.sprite,300,game.input.activePointer);
     }
+    game.physics.collide($scope.myself.sprite, fruitGroup, selfCollideFruit, null, this);
   }
 
-  function User(name) {
-    console.log("creating new user");
-    this.name = name;
-    this.locations = [{}];
-    getAvatar(name);
+  function selfCollideFruit(self, fruit) {
+    fruit.kill();
+    console.log('Hit', fruit.name);
+    $scope.myself.score++;
+    var scoreMessage = {
+      type: "user-score",
+      user: $scope.myself.name,      
+      userScore: $scope.myself.score,
+      fruitName: fruit.name
+    };
+    sock.send(JSON.stringify(scoreMessage));
   }
-
-  function findUser(name, callback) {
-    for (var i = 0; i < $scope.users.length; i++) {
-      if ( $scope.users[i].name === name ) {
-        callback($scope.users[i]);
-        return;
-      }
-    }
-    console.log("adding user");
-    var newUser = new User(name);
-    $scope.users.push(newUser);
-
-    callback(u);
-    }
 
   $scope.formatTwelve = function(date) {
     var hours = date.getHours();
@@ -102,53 +177,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     var strTime = hours + ':' + minutes + ' ' + ampm;
     return strTime;
   }
-
-  $scope.init = function() {
-
-    // get user from server API
-    $http.get('/user').success(function(data) {
-      $scope.myself = new User(data.username);
-      $scope.users.push($scope.myself);
-      var d = new Date();
-      // create a Message to send
-      var chatMessage = {
-        type: "user-login",
-        name: "",
-        messageBody: data.username + " has logged in!",
-        chatDate: $scope.formatTwelve(d)
-      };
-      // **RACE CONDITIONS** delay sending message
-      setTimeout( function() {
-        sock.send(JSON.stringify(chatMessage));
-      }, 500);
-    });
-
-  };
-
-
-  sock.onopen = function() {
-    setInterval(testLoop, 2000);
-    //trackLocation();
-  };
-
-  sock.onmessage = function(e) {
-    var message = eval("(" + e.data + ")");
-    console.log(message);
-    if (message.type == "user-update") {
-      findUser(message.name, function(user) {
-        user.locations.push({x: message.x, y: message.y});
-        //render();
-        $scope.$apply();
-      });
-    } else if (message.type == "user-chat" || message.type == "user-login") {
-      $scope.messages.push(message);
-      console.log($scope.messages);
-    }
-    if (message.fruits) {
-      console.log("this message has fruit info");
-      $scope.fruits = message.fruits;
-    }
-  };
 
   $scope.sendChat = function() {
     var chatTime = " ";
@@ -377,17 +405,4 @@ function testLoop() {
     //$scope.testI++;
   }
 
-  function getAvatar(name) {
-    var url = 'https://api.github.com/users/' + name;
-    $http.get(url).success(function(data) {
-      console.log("success getting image");
-      $scope.avatar[name] = new Image();
-      $scope.avatar[name].src = data.avatar_url;
-      $scope.avatarUrl[name] = data.avatar_url;
-    }).error(function(data) {
-      console.log(data);
-      // set a default avatar if failed
-      $scope.avatar[name].src = "images/ausimg1.png";
-    });
-  }
 }]);
