@@ -133,7 +133,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   function create() {
     fruitGroup = game.add.group();
-    fruitGroup.createMultiple(10, 'fruits', game.rnd.integerInRange(0, 36));
+    fruitGroup.createMultiple(4, 'fruits', game.rnd.integerInRange(0, 36));
     
 
     for ( var i = 0; i < $scope.fruits.length; i++ ) {
@@ -156,7 +156,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   function addOneFruit(name, x, y) {
     var fruit = fruitGroup.getFirstDead();
     fruit.name = name;
-    fruit.body.immovable = true;
+    //fruit.body.immovable = true;
     fruit.reset(x, y);
   }
 
@@ -171,16 +171,20 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   }
 
   function selfCollideFruit(self, fruit) {
-    fruit.kill();
-    console.log('Hit', fruit.name);
-    $scope.myself.score++;
-    var scoreMessage = {
-      type: "user-score",
-      name: $scope.myself.name,
-      userScore: $scope.myself.score,
-      fruitName: fruit.name
-    };
-    sock.send(JSON.stringify(scoreMessage));
+    console.log(fruit.alive);
+    console.log(fruit.visible);
+    if (fruit.alive) {
+      fruit.kill();
+      console.log('Hit', fruit.name);
+      $scope.myself.score++;
+      var scoreMessage = {
+        type: "user-score",
+        name: $scope.myself.name,
+        userScore: $scope.myself.score,
+        fruitName: fruit.name
+      };
+      sock.send(JSON.stringify(scoreMessage));
+    }
   }
 
   $scope.formatTwelve = function(date) {
