@@ -3,8 +3,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   var sock = new SockJS('/sock');
   var game;
   var gameLoaded = false;
-  var gameWidth = 960;
-  var gameHeight = 600;
+  var gameWidth = 380;    // used to be 960
+  var gameHeight = 320;   // used to be 600
 
   sock.onopen = function() {
     $scope.init();
