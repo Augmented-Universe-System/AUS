@@ -2,13 +2,13 @@
 
   <div class="chatContainer">
 
-    <div id="chatWindow">
-        <p ng-repeat="message in messages track by $index">
-          <img class="avatar" ng-if="message.name != '' " src="{{ avatarUrl[message.name] }}" />
-          <img class="avatar" ng-if="message.name == '' " src="images/aus.jpg" />
-          <span class="chat-msg" id="msg-name" ng-class="{red: message.doChange == 'no', blue: message.doChange == 'yes'}">{{ message.name }}:</span>
-          <span class="chat-msg" id="msg-body" ng-class="{red: message.doChange == 'no', blue: message.doChange == 'yes'}">{{ message.messageBody }}</span>
-          <span class="chat-msg" id="msg-date" ng-class="{red: message.doChange == 'no', blue: message.doChange == 'yes'}">{{ message.chatDate }}</span>
+    <div class="chatWindow">
+        <p ng-class="{blue: message.name == myself.name}" ng-repeat="message in messages track by $index">
+          <img class="avatar" ng-if="message.name != '' " src="{{ avatarUrl[message.name] }}" height="40px" width="40px" />
+          <img class="avatar" ng-if="message.name == '' " src="images/aus.jpg" height="40px" width="40px" />
+          <span class="chat-msg" id="msg-name">{{ message.name }}</span>:
+          <span class="chat-msg" id="msg-body" >{{ message.messageBody }}</span>
+          <span class="chat-msg" id="msg-date" >({{ message.chatDate }})</span>
         </p>
     </div> <!-- /chatWindow -->
 
