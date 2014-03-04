@@ -28,11 +28,11 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   var img = new Image();
   img.src = "images/ausimg1.png";
 
-  sock.onopen = function() {
+  sock. onopen= function() {
     $scope.init();
     //setInterval(testLoop, 2000);
     //trackLocation();
-    relocating();
+    setInterval(relocating, 1000);
   };
 
   $scope.init = function() {
@@ -349,8 +349,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
 
         //manipulating latitude and longitude
-        var lati = (latiInput * 100000) % 100;
-        var longi = (Math.abs(longiInput) * 100000) % 100;
+        var lati = (latiInput * 1000000) % 100;
+        var longi = (Math.abs(longiInput) * 1000000) % 100;
 
 
         $scope.myself.locations.push({x: lati, y: longi});
