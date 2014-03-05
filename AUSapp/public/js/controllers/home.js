@@ -108,7 +108,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   function preload() {
     game.stage.backgroundColor = '#eeeeee';
-    game.load.image('ground', 'images/gamegrass.png');
+    game.load.image('ground', 'images/gamegrass2.png');
     game.load.spritesheet('fruits', 'images/fruitnveg32wh37.png', 32, 32);
     game.load.spritesheet('playerSprites', 'images/creatures32x32.png', 32, 32);
   }
