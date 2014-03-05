@@ -2,7 +2,7 @@
 
   <div class="chatContainer">
 
-    <div class="chatWindow">
+    <div id="chat-window">
         <p ng-class="{blue: message.name == myself.name}" ng-repeat="message in messages track by $index">
           <img class="avatar" ng-if="message.name != '' " src="{{ avatarUrl[message.name] }}" height="40px" width="40px" />
           <img class="avatar" ng-if="message.name == '' " src="images/aus.jpg" height="40px" width="40px" />

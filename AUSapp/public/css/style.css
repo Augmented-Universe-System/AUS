@@ -17,6 +17,7 @@ a {
 #gameCanvas {
   float: left;
   border-width: 1px;
+  border-radius: 10px;
   border-style: solid;
 }
 #user-list {
@@ -37,7 +38,7 @@ a {
   height: 280px;
   width: 100px;
 }
-.chatWindow {
+#chat-window {
   display: block;
   height: 278px;
   width: 100px;
@@ -45,6 +46,7 @@ a {
   background-color: #f8f8f8;
   overflow-y: scroll;
   word-wrap: break-word;
+  border-radius: 10px;
 }
 .chatInputContainer {
   height: 15px;
