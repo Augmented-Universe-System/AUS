@@ -144,9 +144,28 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   }
 
   function update() {
+    if('undefined' !== typeof textGroup)
+    {
+      textGroup.destroy();
+    }
+
+    textGroup = game.add.group();
+
     for ( var i = 0; i < $scope.users.length; i++ ) {
+
       var user = $scope.users[i];
       var lastLoc = lastLocation(user);
+
+      // draw username underneath the avatar
+      scoreText = game.add.text(
+        lastLoc.x  + 1, 
+        lastLoc.y + 30, 
+        user.name,
+        { font: '10px Arial' }
+        );
+      
+      textGroup.add(scoreText);
+      
       try {
         user.sprite.reset(lastLoc.x, lastLoc.y);
         user.sprite.animations.play('animate');
