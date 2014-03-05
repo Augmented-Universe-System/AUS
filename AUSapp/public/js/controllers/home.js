@@ -183,6 +183,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       var lastLoc = lastLocation(user);
 
       // draw score by the avatar
+/*
       scoreText = game.add.text(
         lastLoc.x  + 6, 
         lastLoc.y - 14, 
@@ -190,6 +191,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
         { font: '14px Arial' }
         );
       textGroup.add(scoreText);
+*/
       //console.log("game.input.activePointer:  " + game.input.activePointer.x);
 
       user.sprite.reset(lastLoc.x, lastLoc.y);
@@ -349,8 +351,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
 
         //manipulating latitude and longitude
-        var lati = (latiInput * 500000) % 320;
-        var longi = (Math.abs(longiInput) * 500000) % 380;
+        var lati = (latiInput * 500000) % 380;
+        var longi = (Math.abs(longiInput) * 500000) % 320;
 
 
         $scope.myself.locations.push({x: lati, y: longi});
