@@ -90,7 +90,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     } else if (message.type == "user-chat") {
       $scope.messages.push(message);
       console.log($scope.messages);
-      $scope.$apply();
     }
     else if (message.type == "user-score") {
       findUser(message.name, function(user) {
@@ -109,11 +108,14 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   function preload() {
     game.stage.backgroundColor = '#eeeeee';
+    game.load.image('ground', 'images/gamegrass.png');
     game.load.spritesheet('fruits', 'images/fruitnveg32wh37.png', 32, 32);
     game.load.spritesheet('playerSprites', 'images/creatures32x32.png', 32, 32);
   }
 
   function create() {
+    game.add.sprite(0, 0, 'ground');
+
     fruitGroup = game.add.group();
     textGroup = game.add.group();
     fruitGroup.createMultiple(10, 'fruits', game.rnd.integerInRange(0, 36));
@@ -217,8 +219,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     if (navigator.geolocation) {
       function updateLocation(latiInput, longiInput) {
         // scale the user coordinates
-        var lati = (latiInput * 500000) % 350;
-        var longi = (Math.abs(longiInput) * 500000) % 290;
+        var lati = (latiInput * 500000) % 380;
+        var longi = (Math.abs(longiInput) * 500000) % 320;
         $scope.myself.locations.push({x: lati, y: longi});
         $scope.$apply();
       }
