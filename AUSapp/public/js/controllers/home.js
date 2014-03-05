@@ -146,9 +146,28 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   }
 
   function update() {
+    if('undefined' !== typeof textGroup)
+    {
+      textGroup.destroy();
+    }
+
+    textGroup = game.add.group();
+
     for ( var i = 0; i < $scope.users.length; i++ ) {
+
       var user = $scope.users[i];
       var lastLoc = lastLocation(user);
+
+      // draw username underneath the avatar
+      scoreText = game.add.text(
+        lastLoc.x  + 1, 
+        lastLoc.y + 30, 
+        user.name,
+        { font: '10px Arial' }
+        );
+      
+      textGroup.add(scoreText);
+      
       try {
         user.sprite.reset(lastLoc.x, lastLoc.y);
         user.sprite.animations.play('animate');
@@ -219,8 +238,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     if (navigator.geolocation) {
       function updateLocation(latiInput, longiInput) {
         // scale the user coordinates
-        var lati = (latiInput * 500000) % 380;
-        var longi = (Math.abs(longiInput) * 500000) % 320;
+        var lati = (latiInput * 1000000) % 350;
+        var longi = (Math.abs(longiInput) * 1000000) % 290;
         $scope.myself.locations.push({x: lati, y: longi});
         $scope.$apply();
       }
