@@ -37,7 +37,7 @@ a {
   height: 280px;
   width: 100px;
 }
-#chatWindow {
+.chatWindow {
   display: block;
   height: 278px;
   width: 100px;

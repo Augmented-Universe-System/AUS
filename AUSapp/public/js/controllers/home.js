@@ -349,7 +349,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
 
         //manipulating latitude and longitude
-        var lati = (latiInput * 1000000) % 100;
+        var lati = (latiInput * 500000) % 100;
         var longi = (Math.abs(longiInput) * 1000000) % 100;
 
 
