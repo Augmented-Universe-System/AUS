@@ -217,8 +217,8 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     if (navigator.geolocation) {
       function updateLocation(latiInput, longiInput) {
         // scale the user coordinates
-        var lati = (latiInput * 500000) % 380;
-        var longi = (Math.abs(longiInput) * 500000) % 320;
+        var lati = (latiInput * 500000) % 350;
+        var longi = (Math.abs(longiInput) * 500000) % 290;
         $scope.myself.locations.push({x: lati, y: longi});
         $scope.$apply();
       }
