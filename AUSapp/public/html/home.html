@@ -4,8 +4,7 @@
 
     <div id="chat">
         <p ng-class="{blue: message.name == myself.name}" ng-repeat="message in messages track by $index">
-          <img class="avatar" ng-if="message.name != '' " src="{{ avatarUrl[message.name] }}" height="40px" width="40px" />
-          <img class="avatar" ng-if="message.name == '' " src="images/aus.jpg" height="40px" width="40px" />
+          <img class="avatar" ng-if="message.type == 'user-login' " src="images/aus.jpg" height="40px" width="40px" />
           <span class="chat-msg" id="msg-name">{{ message.name }}</span>
           <span class="chat-msg" id="msg-body" >{{ message.messageBody }}</span>
           <span class="chat-msg" id="msg-date" >({{ message.chatDate }})</span>
