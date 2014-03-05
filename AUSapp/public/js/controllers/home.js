@@ -14,6 +14,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   $scope.myself = null;
   $scope.fruits = [];
   var fruitGroup;
+  var textGroup;
   $scope.testI = 0;
   var startingLocations = [
     {x: 10, y: 10},
@@ -29,8 +30,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   sock. onopen= function() {
     $scope.init();
     //setInterval(testLoop, 2000);
-    //trackLocation();
-    relocating();
+    trackLocation();
   };
 
   $scope.init = function() {
@@ -103,7 +103,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     if (message.type == "user-update") {
       findUser(message.name, function(user) {
         user.locations.push({x: message.x, y: message.y});
-        //render();
         $scope.$apply();
       });
     } else if (message.type == "user-chat" || message.type == "user-login") {
@@ -113,7 +112,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     else if (message.type == "user-score") {
       findUser(message.name, function(user) {
         user.score = message.userScore;
-
         var f = parseInt(message.fruitName.slice(-1));
         addOneFruit(message.fruitName, $scope.fruits[f].loc.x, $scope.fruits[f].loc.y);
         $scope.$apply();
@@ -138,15 +136,10 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   function create() {
     fruitGroup = game.add.group();
+    textGroup = game.add.group();
     fruitGroup.createMultiple(10, 'fruits', game.rnd.integerInRange(0, 36));
-    
 
     for ( var i = 0; i < $scope.fruits.length; i++ ) {
-      //var fruit = $scope.fruits[i];
-      //var f = fruitGroup.create(fruit.loc.x, fruit.loc.y, 'fruits', game.rnd.integerInRange(0, 36));
-      //f.name = 'fruit' + i;
-      //f.body.immovable = true;
-
       addOneFruit('fruit' + i, $scope.fruits[i].loc.x, $scope.fruits[i].loc.y);
     }
 
@@ -170,32 +163,13 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
   }
 
   function update() {
-    if('undefined' !== typeof textGroup)
-    {
-      textGroup.destroy();
-    }
-    textGroup = game.add.group();
-
     for ( var i = 0; i < $scope.users.length; i++ ) {
       var user = $scope.users[i];
       var lastLoc = lastLocation(user);
-
-      // draw score by the avatar
-/*
-      scoreText = game.add.text(
-        lastLoc.x  + 6, 
-        lastLoc.y - 14, 
-        "(" + 4 + ")",
-        { font: '14px Arial' }
-        );
-      textGroup.add(scoreText);
-*/
-      //console.log("game.input.activePointer:  " + game.input.activePointer.x);
-
       user.sprite.reset(lastLoc.x, lastLoc.y);
-      //game.physics.moveToPointer($scope.myself.sprite,300,game.input.activePointer);
 
-      //game.world.remove(textGroup);
+      // user follows cursor (testing only)
+      //game.physics.moveToPointer($scope.myself.sprite,300,game.input.activePointer);
     }
     game.physics.collide($scope.myself.sprite, fruitGroup, selfCollideFruit, null, this);
 
@@ -221,7 +195,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
     // keep track of the hours and minutes of each call to this function
     $scope.oldTime = hours + " " + minutes;
-    console.log("scope.oldTime: " + $scope.oldTime);
 
     var ampm = hours >= 12 ? 'pm' : 'am';
     hours = hours % 12;
@@ -237,15 +210,13 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     var newHour = newDate.getHours();
     var newMinutes = newDate.getMinutes();
     var newTime = newHour + " " + newMinutes;
-    
+
     if(newTime == $scope.oldTime){
         chatTime = " ";
-        console.log("chatTime (if statement): " + chatTime);
     } else {
         chatTime = $scope.formatTwelve(newDate);
-        console.log("chatTime in (else): " + chatTime);
     }
-    
+
     var chatMessage = {
       type: "user-chat",
       name: $scope.myself.name,
@@ -254,110 +225,14 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     };
     sock.send(JSON.stringify(chatMessage));
     $scope.messageText = "";
-    
-/*
-    var fruitMessage = {
-      type: "fruit-update",
-      messageBody: "fruit message"
-    };
-    sock.send(JSON.stringify(fruitMessage));
-*/
   };
-
-  function render() {
-    console.log($scope.users);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    var counter = 1;
-
-    for ( var i = 0; i < $scope.users.length; i++ ) {
-      var user = $scope.users[i];
-
-      var userLastLoc = lastLocation(user);
-      var userFirstLoc = firstLocation(user);
-      console.log("This is the user's first location: " + userFirstLoc.x + " " + userFirstLoc.y);
-      console.log("This is the user's last location: " + userLastLoc.x + " " + userLastLoc.y);
-
-      var x = userLastLoc.x;
-      var y = userLastLoc.y;
-
-      console.log("UserName: " + user.name + " This is x in render() " + x + " ; This is y in render() " + y);
-      //var x = (u.x * 100000) % 100;
-      //var y = (Math.abs(u.y) * 100000) % 100;
-      //var firstX = x;
-      //var firstY = y;
-
-      if ( user.name == $scope.myself.name ) {
-        ctx.fillStyle="blue";
-        ctx.strokeStyle="blue";
-        ctx.drawImage($scope.avatar[user.name], x, y);
-      } else {
-        ctx.fillStyle="red";
-        ctx.strokeStyle="red";
-        ctx.drawImage($scope.avatar[user.name], x + 100, y);
-      }
-      //ctx.drawImage($scope.avatar[user.name], x, y);
-
-
-      /*
-      ctx.beginPath();
-      ctx.moveTo(userFirstLoc.x, userFirstLoc.y);
-      for(i = 0; i < user.locations.length; i++) {
-        ctx.lineTo(user.locations[i].x, Math.abs(user.locations[i].y));
-      }
-      ctx.lineJoin = 'miter';
-      ctx.stroke();
-
-      ctx.font = "13px Arial";
-      ctx.fillText(user.name, x - 10, y - 5);
-      */
-      //pathIntersection(user.name, x, y);
-      //ctx.fillText(user.name + " (" + counter + ")", x - 20, y - 5);
-      //counter ++;
-    }
-
-    // draw fruits
-    console.log("fruits.length: " + $scope.fruits.length);
-    for (var i = 0; i < $scope.fruits.length; i++) {
-      console.log("Fruit location from before the loop: " + $scope.fruits[i].fruitLocation.x + ", " + $scope.fruits[i].fruitLocation.y);
-      ctx.drawImage(img, $scope.fruits[i].fruitLocation.x, $scope.fruits[i].fruitLocation.y);
-      //console.log("This is the fruits array.");
-    }
-  }
-
-  function relocating(user) {
-
-    if (navigator.geolocation) {
-      function updateLocation(latiInput, longiInput) {
-
-
-        //manipulating latitude and longitude
-        var lati = (latiInput * 500000) % 380;
-        var longi = (Math.abs(longiInput) * 500000) % 320;
-
-
-        $scope.myself.locations.push({x: lati, y: longi});
-        console.log("Latitude in trackLocation() " + lati + " ; Longitude in trackLocation() " + longi);
-        $scope.$apply();
-      }
-      var watchPOS = navigator.geolocation.watchPosition(function(position) {
-        updateLocation(position.coords.latitude, position.coords.longitude);
-
-        $scope.$apply();
-        var serverMessage = {
-          type: "user-update",
-          name: $scope.myself.name,
-          x: lastLocation($scope.myself).x,
-          y: lastLocation($scope.myself).y
-        };
-        sock.send(JSON.stringify(serverMessage));
-      });
-    }
-    else{alert("Geolocation is not supported by this browser.");}
-  }
 
   function trackLocation() {
     if (navigator.geolocation) {
-      function updateLocation(lati, longi) {
+      function updateLocation(latiInput, longiInput) {
+        // scale the user coordinates
+        var lati = (latiInput * 500000) % 380;
+        var longi = (Math.abs(longiInput) * 500000) % 320;
         $scope.myself.locations.push({x: lati, y: longi});
         $scope.$apply();
       }
