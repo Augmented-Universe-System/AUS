@@ -25,8 +25,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     {x: 300, y: 300},
     {x: 100, y: 300}
   ];
-  var img = new Image();
-  img.src = "images/ausimg1.png";
 
   sock. onopen= function() {
     $scope.init();
@@ -326,25 +324,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     }
   }
 
-  //extra
   function relocating(user) {
-/*
-    //avatar first drawn on specific location
-    //old GPS location minus new GPS location
-    var gpsLocX = Math.abs(user.locations[user.locations.length-2].x - user.locations[user.locations.length-1].x);
-    var gpsLocY = Math.abs(user.locations[user.locations.length-2].y - user.locations[user.locations.length-1].y);
-    //take difference, multiply it by some number
-    var avatarLocX = gpsLocX * 200;
-    var avatarLocY = gpsLocY * 200;
-    //return new locations for the avatar
-    return [avatarLocX, avatarLocY];
-    //add location to avatar's location, which in turn moves avatar on canvas
-
-      //var x = (u.x * 100000) % 100;
-      //var y = (Math.abs(u.y) * 100000) % 100;
-      //var firstX = x;
-      //var firstY = y;
-*/
 
     if (navigator.geolocation) {
       function updateLocation(latiInput, longiInput) {
@@ -375,50 +355,10 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     else{alert("Geolocation is not supported by this browser.");}
   }
 
-
-
-  function pathIntersection(user, x, y) {
-    //check the next position of user
-    //check to see if user hits another's path
-      //need to minus all the widths of each user and see if anyone hits anyone else
-    for (var u = 0; u < $scope.users.length; u++) {
-      for (var ul = 1; ul < $scope.users[u].locations.length-1; ul++) {
-        
-        console.log("This is the length of the users' locations: " + $scope.users[u].locations.length);
-        console.log("u: " + u);
-        console.log("ul: " + ul);
-        console.log("This is the input of x: " + Math.abs(x) + "\n");
-        console.log("This is the abs of x: " + Math.abs($scope.users[u].locations[ul].x) + "\n");
-        console.log("This is the input of y: " + Math.abs(y) + "\n");
-        console.log("This is the abs of y: " + Math.abs($scope.users[u].locations[ul].y) + "\n");
-       
-        if ( ((Math.abs(x) > Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) == Math.abs($scope.users[u].locations[ul].y)) || 
-          (Math.abs(x) < Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) == Math.abs($scope.users[u].locations[ul].y)) ||
-          (Math.abs(x) == Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) > Math.abs($scope.users[u].locations[ul].y)) ||
-          (Math.abs(x) == Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) < Math.abs($scope.users[u].locations[ul].y)) ||
-          (Math.abs(x) < Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) > Math.abs($scope.users[u].locations[ul].y)) ||
-          (Math.abs(x) > Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) < Math.abs($scope.users[u].locations[ul].y)) ||
-          (Math.abs(x) > Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) > Math.abs($scope.users[u].locations[ul].y)) ||
-          (Math.abs(x) < Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) < Math.abs($scope.users[u].locations[ul].y)) ||
-          (Math.abs(x) == Math.abs($scope.users[u].locations[ul].x) && Math.abs(y) == Math.abs($scope.users[u].locations[ul].y))) && (Math.abs(x) != Math.abs($scope.myself.locations[ul].x) && Math.abs(y) != Math.abs($scope.myself.locations[ul].y)) ) {
-            alert("User " + user.name + " has lost the game.");
-            //for (var g = 0; g < $scope.myself.locations.length; g++) {
-              //console.log("This is the user's location number " + g + ": " + $scope.myself.locations[g].x + ", " + $scope.myself.locations[g].y);
-            //}
-            //console.log("User " + user.name + " has lost the game.");
-        }
-      }
-    }
-    //if hit path, user lose
-    //else if not hit path, do nothing
-  }
-
-
   function trackLocation() {
     if (navigator.geolocation) {
       function updateLocation(lati, longi) {
         $scope.myself.locations.push({x: lati, y: longi});
-        console.log("Latitude in trackLocation() " + lati + " ; Longitude in trackLocation() " + longi);
         $scope.$apply();
       }
       var watchPOS = navigator.geolocation.watchPosition(function(position) {
@@ -459,8 +399,6 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
 function testLoop() {
 
-    //var userLastLoc = lastLocation($scope.myself);
-
     // generate random coordinates between 10-400 for x and 10-300 for y
     var minX = 10;
     var maxX = gameWidth - 50;
@@ -475,24 +413,14 @@ function testLoop() {
     $scope.myself.locations.push({x: randX, y: randY});
     $scope.apply;
 
-    /*
-    if ($scope.testI % 8 == 0)
-      $scope.myself.locations.push({x: (userLastLoc.x + 35), y: userLastLoc.y});
-    else
-      $scope.myself.locations.push({x: userLastLoc.x, y: (userLastLoc.y + 5)});
-    $scope.$apply;
-    */
     var serverMessage = {
         type: "user-update",
         name: $scope.myself.name,
         x: randX,
         y: randY
 
-        //x: lastLocation($scope.myself).x,
-        //y: lastLocation($scope.myself).y
        };
     sock.send(JSON.stringify(serverMessage));
-    //$scope.testI++;
   }
 
 }]);
