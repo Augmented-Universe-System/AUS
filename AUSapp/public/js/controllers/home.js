@@ -32,7 +32,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
     $scope.init();
     //setInterval(testLoop, 2000);
     //trackLocation();
-    setInterval(relocating, 1000);
+    relocating();
   };
 
   $scope.init = function() {
