@@ -1,14 +1,16 @@
 <% include includes/header.ejs %>
-  <h1>Login Page</h1>
-  <form action='/login' method="post">
-    <input type='text' name='username' placeholder='Username' />
-    <input type='password' name='password' placeholder='Password' />
-    <input type='submit' value='Login' />
-  </form>
-  New? <a href="/register">Register</a>
+  <div class="login">
+    <h1>Login Page</h1>
+    <form action='/login' method="post">
+      <input class="input" type='text' name='username' placeholder='Username' />
+      <input class="input" type='password' name='password' placeholder='Password' />
+      <input class="btn" type='submit' value='Login' />
+    </form>
+    New? <a href="/register">Register</a>
 
-  <center>
-  <img src="images/aus.jpg" width="300" height="250">
-  </center>
+    <center>
+    <img src="images/aus.jpg" width="300" height="250">
+    </center>
+  </div>
 
 <% include includes/footer.ejs %>

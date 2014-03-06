@@ -1,15 +1,14 @@
 <% include includes/header.ejs %>
-  <% if (user) { %>
-    <div class="welcome">
+  <div data-ng-view id="container">
+  </div>
+  <div class="welcome">
+    <% if (user) { %>
       Welcome <%= user.username %>
       (<a href='/logout'>logout</a>)
-    </div>
-  <% } else { %>
-    <div class="welcome">
+    <% } else { %>
       <a href="/login">Login</a>
       <a href="/register">Register</a>
-    </div>
-  <% } %>
-  <div data-ng-view id="container">
+    <% } %>
+    <button id="goFull" class="btn">Fullscreen</button>
   </div>
 <% include includes/footer.ejs %>

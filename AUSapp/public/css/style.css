@@ -1,20 +1,52 @@
 body {
+  background: #333;
+  color: #fff;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 a {
   color: #00b7ff;
 }
+.login {
+  margin: 5%;
+}
+.login h1 {
+  color: #00b7ff;
+}
 #container {
   width: 486px;
+  margin: 5% auto 0;
+}
+@media screen and (max-width: 599px) {
+  #container {
+    margin: 0;
+  }
 }
 .welcome {
-  width: 486px;
+  background: #333;
+  width: 490px;
+  top: 320px;
+  color: #fff;
+  margin: 0 auto;
+}
+@media screen and (max-width: 599px) {
+  .welcome {
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    width: 380px;
+    background-color: rgba(200,200,200,0.8);
+  }
 }
 .innerContainer {
   width: 485px;
   height: 325px;
+  background: #333;
 }
 #gameCanvas {
+  position: absolute;
+  z-index: 1;
   float: left;
 }
 #user-list {
@@ -29,6 +61,7 @@ a {
   color: #00f;
 }
 .chatContainer {
+  z-index: 1;
   display: block;
   position: relative;
   float: right;
@@ -37,19 +70,47 @@ a {
 }
 #chat {
   display: block;
-  height: 278px;
   width: 100px;
   padding: 0 5px 0 5px;
   background-color: #f8f8f8;
   overflow-y: scroll;
   word-wrap: break-word;
   border-radius: 10px;
+  height: 265px;
 }
 .chatInputContainer {
   height: 15px;
 }
-.chatInput {
+.input {
   width: 100px;
+  border: 2px solid #bdc3c7;
+  color: #34495e;
+  background-color: #fff !important;
+  font-family: "Lato", Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  padding: 2px;
+  -webkit-appearance: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  -webkit-transition: border 0.25s linear, color 0.25s linear, background-color 0.25s linear;
+  transition: border 0.25s linear, color 0.25s linear, background-color 0.25s linear;
+}
+.chatInput:focus {
+  border-color: #1abc9c;
+  outline: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.btn {
+  width: 108px;
+  border: none;
+  color: #fff;
+  font-size: 15px;
+  background-color: #1abc9c;
+  padding: 2px;
+  -webkit-font-smoothing: subpixel-antialiased;
+  -webkit-transition: border 0.25s linear, color 0.25s linear, background-color 0.25s linear;
+  transition: border 0.25s linear, color 0.25s linear, background-color 0.25s linear;
 }
 .chatTime {
   font-size: 75%;

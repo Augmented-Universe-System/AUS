@@ -3,5 +3,16 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-route.js"></script>
     <script src="js/client.js"></script>
     <script src="js/controllers/home.js"></script>
+    <script>
+      document.getElementById('goFull').addEventListener('click', function() {
+        //var can = document.getElementsByTagName('canvas')[0];
+        var home = document.getElementById('home');
+        if (screenfull.enabled) {
+          screenfull.request(home);
+        } else {
+          window.scrollTo(0,1);
+        }
+      });
+    </script>
   </body>
 </html>
