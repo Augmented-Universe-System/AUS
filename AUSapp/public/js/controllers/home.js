@@ -108,7 +108,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   function preload() {
     game.stage.backgroundColor = '#eeeeee';
-    game.load.image('ground', 'images/gamegrass2.png');
+    game.load.image('ground', 'images/zelda_grass_380.png');
     game.load.spritesheet('fruits', 'images/fruitnveg32wh37.png', 32, 32);
     game.load.spritesheet('playerSprites', 'images/creatures32x32.png', 32, 32);
   }
@@ -160,10 +160,10 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
       // draw username underneath the avatar
       scoreText = game.add.text(
-        lastLoc.x  + 1, 
-        lastLoc.y + 30, 
+        lastLoc.x  + -2, 
+        lastLoc.y + 32, 
         user.name,
-        { font: '10px Arial' }
+        { font: '13px Arial white', fill: "#FFF" }
         );
       
       textGroup.add(scoreText);
