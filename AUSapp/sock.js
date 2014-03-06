@@ -7,7 +7,7 @@ module.exports  = function(server, db) {
   var connections = [];
 
   var fruits = [];
-  var MAX_FRUIT = 4;
+  var MAX_FRUIT = 10;
   for (var i = 0; i < MAX_FRUIT; i++ ) {
     fruits[i] = generateFruit();
   };
