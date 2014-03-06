@@ -70,7 +70,6 @@ a {
 }
 #chat {
   display: block;
-  width: 100px;
   padding: 0 5px 0 5px;
   background-color: #f8f8f8;
   overflow-y: scroll;
@@ -78,8 +77,32 @@ a {
   border-radius: 10px;
   height: 265px;
 }
+#chat,
 .chatInputContainer {
-  height: 15px;
+  width: 100px;
+}
+@media screen and (min-width: 550px) {
+  #chat,
+  .chatInputContainer {
+    width: 150px;
+  }
+}
+@media screen and (min-width: 590px) {
+  #chat,
+  .chatInputContainer {
+    width: 190px;
+  }
+}
+@media screen and (min-width: 900px) {
+  #chat,
+  .chatInputContainer {
+    width: 300px;
+  }
+}
+@media screen and (min-width: 590px) {
+  .chatInputContainer form .btn {
+    float: right;
+  }
 }
 .input {
   width: 100px;
@@ -94,6 +117,16 @@ a {
   box-shadow: none;
   -webkit-transition: border 0.25s linear, color 0.25s linear, background-color 0.25s linear;
   transition: border 0.25s linear, color 0.25s linear, background-color 0.25s linear;
+}
+@media screen and (min-width: 590px) {
+  .input {
+    width: 190px;
+  }
+}
+@media screen and (min-width: 900px) {
+  .input {
+    width: 300px;
+  }
 }
 .chatInput:focus {
   border-color: #1abc9c;

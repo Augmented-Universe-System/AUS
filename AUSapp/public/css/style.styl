@@ -62,7 +62,6 @@ a
 
 #chat
   display block
-  width 100px
   padding 0 5px 0 5px
   background-color #F8F8F8
   overflow-y scroll
@@ -70,9 +69,20 @@ a
   border-radius 10px
   height 265px
 
-.chatInputContainer
-  width = 100px
-  height 15px
+#chat, .chatInputContainer
+  width 100px
+  @media screen and (min-width: 550px)
+    width 150px
+  @media screen and (min-width: 590px)
+    width 190px
+  @media screen and (min-width: 900px)
+    width 300px
+
+
+.chatInputContainer form
+  .btn
+    @media screen and (min-width: 590px)
+      float right
 
 .input
   width 100px
@@ -87,6 +97,10 @@ a
   box-shadow: none;
   -webkit-transition: border .25s linear, color .25s linear, background-color .25s linear;
   transition: border .25s linear, color .25s linear, background-color .25s linear;
+  @media screen and (min-width: 590px)
+    width 190px
+  @media screen and (min-width: 900px)
+    width 300px
 
 .chatInput:focus
   border-color: #1abc9c;
