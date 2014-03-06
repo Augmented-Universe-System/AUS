@@ -89,7 +89,7 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
       });
     } else if (message.type == "user-chat") {
       $scope.messages.push(message);
-      console.log($scope.messages);
+      $scope.$apply();
     }
     else if (message.type == "user-score") {
       findUser(message.name, function(user) {
