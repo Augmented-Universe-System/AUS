@@ -16,9 +16,6 @@ a {
 }
 #gameCanvas {
   float: left;
-  border-width: 1px;
-  border-radius: 10px;
-  border-style: solid;
 }
 #user-list {
   list-style: none;

@@ -33,6 +33,14 @@ angular.module('AUSapp').controller('Home', ['$scope', '$http', function($scope,
 
   $scope.init = function() {
 
+    window.addEventListener("load",function() {
+      // Set a timeout...
+      setTimeout(function(){
+        // Hide the address bar!
+        window.scrollTo(0, 1);
+      }, 0);
+    });
+
     // get user from server API
     $http.get('/user').success(function(data) {
       $scope.myself = new User( data.username, Math.floor(Math.random()*(29)) );
